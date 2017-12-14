@@ -1,5 +1,6 @@
 package pl.sdacademy.controllers;
 
+
 import pl.sdacademy.models.AccountantRegistry;
 
 import java.io.IOException;
@@ -10,5 +11,8 @@ import java.io.IOException;
 public class AccountantController {
     public static void addAccountant(String login, String password) throws IOException {
         AccountantRegistry.getInstance().addAccountant(login, password);
+    }
+    public static void loadExistingAccountantsFromFile() throws IOException {
+        AccountantRegistry.getInstance().loadExistingAccountantsFromFile();
     }
 }
