@@ -112,7 +112,6 @@ public class Main {
                     System.out.println(" 0 - wyjść z programu");
                     System.out.println(" 1 - wypisać wszystkie firmy");
 
-
                     switch (scanner.nextInt()) {
                         case 1:
                             CompanyController.listCompanies();
@@ -131,6 +130,7 @@ public class Main {
                             scanner.nextLine();
                             break;
                     }
+                    break;
 
                 }
 
