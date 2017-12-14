@@ -142,6 +142,7 @@ public class Main {
                     System.out.println(" 2 - dodać firmę");
                     System.out.println(" 3 - dodać nowego admina");
                     System.out.println(" 4 - dodać nowego księgowego");
+                    System.out.println(" 5 - usunąć admina");
                     System.out.println(" 0 - wyjść z programu");
 
                     switch (scanner.nextInt()) {
@@ -173,6 +174,13 @@ public class Main {
                             AccountantController.addAccountant(accountantLogin,accountantPassword);
                             break;
 
+                        case 5:
+                            System.out.println("Podaj login admina, którego chcesz usunąć: ");
+                            scanner.nextLine();
+                            String adminToBeDeleted = scanner.next();
+                            AdminController.removeAdmin(adminToBeDeleted);
+                            break;
+
                         case 0:
                             state = State.EXIT;
                             scanner.nextLine();
@@ -200,6 +208,7 @@ public class Main {
                     state = State.LOGGED_IN;
                     break;
                 }
+
             }
         }
         // write your code here

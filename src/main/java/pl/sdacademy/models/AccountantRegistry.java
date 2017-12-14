@@ -22,9 +22,35 @@ public class AccountantRegistry {
         this.accountants = new ArrayList<>();
     }
 
-    public void addAccountant(String login, String password) {
+    public Accountant findAccountant(String login, String password) throws AccountantNotFoundException{
+        for (Accountant accountant : accountants){
+            if (accountant.getLogin().equals(login) && accountant.getPassword().equals(password)){
+                return accountant;
+            }
+        }
+        throw new AccountantNotFoundException();
+    }
+
+    public boolean checkIfAcountantLoginAlreadyExist(String login){
+        for (Accountant accountant : accountants){
+            if (accountant.getLogin().equals(login)){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public void addAccountant(String login, String password) throws IOException {
+        if (checkIfAcountantLoginAlreadyExist(login)){
+            throw new IllegalArgumentException("Księgowy z tym loginem już istnieje!");
+        }
         this.accountants.add(new Accountant(login, password));
     }
+
+    public void removeAccountant(){
+
+    }
+
 
 
     public void loadExistingAccountantsFromFile() throws IOException {
