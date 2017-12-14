@@ -4,6 +4,7 @@ import pl.sdacademy.exceptions.AdminNotFoundException;
 import pl.sdacademy.views.CompanyView;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -49,6 +50,7 @@ public class AdminRegistry {
             String[] credentials = line.split(";");
             addAdmin(credentials[0], credentials[1]);
         }
+        input.close();
     }
 
 
@@ -61,7 +63,7 @@ public class AdminRegistry {
 
     public void addAdmin(String login, String password) throws IOException {
         if (checkIfAdminLoginAlreadyExists(login)) {
-            throw new IllegalArgumentException("Admin z tym loginem już istnieje!");
+
         }
         this.admins.add(new Admin(login, password));
     }
@@ -74,4 +76,36 @@ public class AdminRegistry {
         }
         System.out.println("Pomyślnie dodano admina!");
     }
+
+    public void removeAdmin(String login) throws IOException {
+        Admin adminToBeRemoved = null;
+        for (Admin admin : admins) {
+            if (admin.getLogin().equals(login)) {
+                adminToBeRemoved = admin;
+            }
+        }
+        if (adminToBeRemoved != null) {
+
+            this.admins.remove(adminToBeRemoved);
+            System.out.println("Usunięto admina");
+
+            try (FileWriter fw = new FileWriter("src/resources/adminListTemp.txt", true);
+                 BufferedWriter bw = new BufferedWriter(fw);
+                 PrintWriter out = new PrintWriter(bw)) {
+                 for (Admin a : admins) {
+                     out.println(a.getLogin() + ";" + a.getPassword());
+                 }
+            }
+
+
+
+            File oldFile = new File("src/resources/adminList.txt");
+            boolean success = Files.deleteIfExists(oldFile.toPath());
+            File newFile = new File("src/resources/adminListTemp.txt");
+            boolean success2 = newFile.renameTo(new File("src/resources/adminList.txt"));
+        }
+
+
+    }
+
 }

@@ -3,14 +3,14 @@ package pl.sdacademy;
 import pl.sdacademy.controllers.AccountantController;
 import pl.sdacademy.controllers.AdminController;
 import pl.sdacademy.controllers.CompanyController;
+import pl.sdacademy.exceptions.AccountantNotFoundException;
 import pl.sdacademy.exceptions.AdminNotFoundException;
+import pl.sdacademy.models.Accountant;
+import pl.sdacademy.models.AccountantRegistry;
 import pl.sdacademy.models.Admin;
 import pl.sdacademy.models.AdminRegistry;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 public class Main {
@@ -18,28 +18,36 @@ public class Main {
     public enum State {
         INIT,
         LOGGING_IN_AS_ADMIN,
+        LOGGING_IN_AS_ACCOUNTANT,
         LOGGED_IN,
+        LOGGED_IN_ACCOUNTANT,
         CREATING_COMPANY,
         EXIT,
     }
 
     public static void main(String[] args) throws IOException {
-	    State state = State.INIT;
-	    AdminController.loadExistingAdminsFromFile();
+        State state = State.INIT;
+        AdminController.loadExistingAdminsFromFile();
         Scanner scanner = new Scanner(System.in);
 
         Admin currentAdmin = null;
-
+        Accountant currentAccountant = null;
 
 
         while (state != State.EXIT) {
-            switch(state) {
+            switch (state) {
                 case INIT: {
                     System.out.println("Dzień dobry, co chcesz zrobić?");
+                    System.out.println(" 2 - zalogować się jako księgowy");
                     System.out.println(" 1 - zalogować się jako admin");
                     System.out.println(" 0 - wyjść z programu");
 
                     switch (scanner.nextInt()) {
+                        case 2:
+                            state = State.LOGGING_IN_AS_ACCOUNTANT;
+                            scanner.nextLine();
+                            break;
+
                         case 1:
                             state = State.LOGGING_IN_AS_ADMIN;
                             scanner.nextLine();
@@ -57,6 +65,27 @@ public class Main {
                             break;
                     }
                     break;
+                }
+
+                case LOGGING_IN_AS_ACCOUNTANT: {
+                    System.out.println("Podaj login:");
+                    String login = scanner.nextLine();
+
+                    System.out.println("Podaj hasło:");
+                    String password = scanner.nextLine();
+
+                    try {
+                        currentAccountant = AccountantRegistry.getInstance().findAccountant(login, password);
+                        System.out.println("Dzień dobry " + currentAccountant.getLogin());
+                        state = State.LOGGED_IN_ACCOUNTANT;
+                        //Co robi księgowy po zalogowaniu?
+
+                    } catch (AccountantNotFoundException e) {
+                        System.out.println("Zły login lub hasło");
+                        state = State.INIT;
+                    }
+                    break;
+
                 }
 
                 case LOGGING_IN_AS_ADMIN: {
@@ -78,12 +107,40 @@ public class Main {
                     break;
                 }
 
+                case LOGGED_IN_ACCOUNTANT: {
+                    System.out.println("Co chcesz zrobić?");
+                    System.out.println(" 0 - wyjść z programu");
+                    System.out.println(" 1 - wypisać wszystkie firmy");
+
+
+                    switch (scanner.nextInt()) {
+                        case 1:
+                            CompanyController.listCompanies();
+                            state = State.LOGGED_IN;
+                            scanner.nextLine();
+                            break;
+
+                        case 0:
+                            state = State.EXIT;
+                            scanner.nextLine();
+                            break;
+
+                        default:
+                            System.out.println("Zła odpowiedź");
+                            state = State.INIT;
+                            scanner.nextLine();
+                            break;
+                    }
+
+                }
+
                 case LOGGED_IN: {
                     System.out.println("Co chcesz zrobić?");
                     System.out.println(" 1 - wypisać wszystkie firmy");
                     System.out.println(" 2 - dodać firmę");
                     System.out.println(" 3 - dodać nowego admina");
                     System.out.println(" 4 - dodać nowego księgowego");
+                    System.out.println(" 5 - usunąć admina");
                     System.out.println(" 0 - wyjść z programu");
 
                     switch (scanner.nextInt()) {
@@ -112,7 +169,14 @@ public class Main {
                             System.out.println();
                             System.out.print("Podaj hasło: ");
                             String accountantPassword = scanner.next();
-                            AccountantController.addAccountant(accountantLogin,accountantPassword);
+                            AccountantController.addAccountant(accountantLogin, accountantPassword);
+                            break;
+
+                        case 5:
+                            System.out.println("Podaj login admina, którego chcesz usunąć: ");
+                            scanner.nextLine();
+                            String adminToBeDeleted = scanner.next();
+                            AdminController.removeAdmin(adminToBeDeleted);
                             break;
 
                         case 0:
@@ -142,6 +206,7 @@ public class Main {
                     state = State.LOGGED_IN;
                     break;
                 }
+
             }
         }
         // write your code here
