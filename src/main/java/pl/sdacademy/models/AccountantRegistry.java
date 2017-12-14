@@ -22,6 +22,8 @@ public class AccountantRegistry {
 
     public AccountantRegistry() {
         this.accountants = new ArrayList<>();
+
+        this.accountants.add(new Accountant("janek", "asd"));
     }
 
     public Accountant findAccountant(String login, String password) throws AccountantNotFoundException {
@@ -33,7 +35,7 @@ public class AccountantRegistry {
         throw new AccountantNotFoundException();
     }
 
-    public boolean checkIfAcountantLoginAlreadyExist(String login) {
+    public boolean checkIfAccountantLoginAlreadyExist(String login) {
         for (Accountant accountant : accountants) {
             if (accountant.getLogin().equals(login)) {
                 return true;
@@ -43,7 +45,7 @@ public class AccountantRegistry {
     }
 
     public void addAccountant(String login, String password) throws IOException {
-        if (checkIfAcountantLoginAlreadyExist(login)) {
+        if (checkIfAccountantLoginAlreadyExist(login)) {
             throw new IllegalArgumentException("Księgowy z tym loginem już istnieje!");
         }
         this.accountants.add(new Accountant(login, password));

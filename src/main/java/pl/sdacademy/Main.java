@@ -26,17 +26,16 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-	    State state = State.INIT;
-	    AdminController.loadExistingAdminsFromFile();
+        State state = State.INIT;
+        AdminController.loadExistingAdminsFromFile();
         Scanner scanner = new Scanner(System.in);
 
         Admin currentAdmin = null;
         Accountant currentAccountant = null;
 
 
-
         while (state != State.EXIT) {
-            switch(state) {
+            switch (state) {
                 case INIT: {
                     System.out.println("Dzień dobry, co chcesz zrobić?");
                     System.out.println(" 2 - zalogować się jako księgowy");
@@ -85,7 +84,7 @@ public class Main {
                         System.out.println("Zły login lub hasło");
                         state = State.INIT;
                     }
-
+                    break;
 
                 }
 
@@ -112,7 +111,6 @@ public class Main {
                     System.out.println("Co chcesz zrobić?");
                     System.out.println(" 0 - wyjść z programu");
                     System.out.println(" 1 - wypisać wszystkie firmy");
-
 
 
                     switch (scanner.nextInt()) {
@@ -171,7 +169,7 @@ public class Main {
                             System.out.println();
                             System.out.print("Podaj hasło: ");
                             String accountantPassword = scanner.next();
-                            AccountantController.addAccountant(accountantLogin,accountantPassword);
+                            AccountantController.addAccountant(accountantLogin, accountantPassword);
                             break;
 
                         case 5:
