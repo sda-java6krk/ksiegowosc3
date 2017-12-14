@@ -17,4 +17,8 @@ public class AdminController {
         AdminRegistry.getInstance().addAdmin(login, password);
         AdminRegistry.getInstance().writeAdminCredentialsToFile(login, password);
     }
+
+    public static void removeAdmin(String login) throws IOException {
+        AdminRegistry.getInstance().removeAdmin(login);
+    }
 }
