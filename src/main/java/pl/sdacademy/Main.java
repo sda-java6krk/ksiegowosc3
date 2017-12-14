@@ -1,10 +1,16 @@
 package pl.sdacademy;
 
+import pl.sdacademy.controllers.AccountantController;
+import pl.sdacademy.controllers.AdminController;
 import pl.sdacademy.controllers.CompanyController;
 import pl.sdacademy.exceptions.AdminNotFoundException;
 import pl.sdacademy.models.Admin;
 import pl.sdacademy.models.AdminRegistry;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 public class Main {
@@ -17,11 +23,14 @@ public class Main {
         EXIT,
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 	    State state = State.INIT;
+	    AdminController.loadExistingAdminsFromFile();
         Scanner scanner = new Scanner(System.in);
 
         Admin currentAdmin = null;
+
+
 
         while (state != State.EXIT) {
             switch(state) {
@@ -73,6 +82,8 @@ public class Main {
                     System.out.println("Co chcesz zrobić?");
                     System.out.println(" 1 - wypisać wszystkie firmy");
                     System.out.println(" 2 - dodać firmę");
+                    System.out.println(" 3 - dodać nowego admina");
+                    System.out.println(" 4 - dodać nowego księgowego");
                     System.out.println(" 0 - wyjść z programu");
 
                     switch (scanner.nextInt()) {
@@ -85,6 +96,23 @@ public class Main {
                         case 2:
                             state = State.CREATING_COMPANY;
                             scanner.nextLine();
+                            break;
+
+                        case 3:
+                            System.out.println("Dodaj nowego admina: \nPodaj login: ");
+                            String login = scanner.next();
+                            System.out.println("Podaj hasło: ");
+                            String password = scanner.next();
+                            AdminController.addAdmin(login, password);
+                            break;
+
+                        case 4:
+                            System.out.print("Dodaj nowego ksiegowego:\nPodaj login: ");
+                            String accountantLogin = scanner.next();
+                            System.out.println();
+                            System.out.print("Podaj hasło: ");
+                            String accountantPassword = scanner.next();
+                            AccountantController.addAccountant(accountantLogin,accountantPassword);
                             break;
 
                         case 0:

@@ -1,0 +1,8 @@
+ETAP 1
+
+1. Dodaj możliwość tworzenia/usuwania/wyświetlania wszystkich kont administratorów. Przy tworzeniu potrzebny jest login i hasło.
+   Przy kasowaniu login. Przy wyświetlaniu wyświetlamy tylko login.
+2. Dodaj możliwość tworzenia/usuwania/wyświetlania wszystkich kont księgowych.
+   Przy tworzeniu potrzebny jest login i hasło. Przy kasowaniu login. Przy wyświetlaniu wyświetlamy tylko login.
+3. Dodaj możliwość zalogowania się jako księgowy albo jako admin (teraz jest tylko admin).
+4. Zapisuj konta księgowych i administratorów na dysku.
