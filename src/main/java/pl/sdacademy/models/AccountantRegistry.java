@@ -2,8 +2,11 @@ package pl.sdacademy.models;
 
 import pl.sdacademy.exceptions.AccountantNotFoundException;
 
+import java.io.File;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class AccountantRegistry {
     private static AccountantRegistry instance = null;
@@ -56,6 +59,16 @@ public class AccountantRegistry {
         if (accountantToBeRemoved != null) {
             this.accountants.remove(accountantToBeRemoved);
             System.out.println("Usunięto Księgowego");
+        }
+    }
+
+    public void loadExistingAccountantsFromFile() throws IOException {
+        File file = new File("src/resources/accountantList.txt");
+        Scanner input = new Scanner(file);
+        while (input.hasNextLine()) {
+            String line = input.nextLine();
+            String[] credentials = line.split(";");
+            addAccountant(credentials[0], credentials[1]);
         }
     }
 
