@@ -3,7 +3,10 @@ package pl.sdacademy;
 import pl.sdacademy.controllers.AccountantController;
 import pl.sdacademy.controllers.AdminController;
 import pl.sdacademy.controllers.CompanyController;
+import pl.sdacademy.exceptions.AccountantNotFoundException;
 import pl.sdacademy.exceptions.AdminNotFoundException;
+import pl.sdacademy.models.Accountant;
+import pl.sdacademy.models.AccountantRegistry;
 import pl.sdacademy.models.Admin;
 import pl.sdacademy.models.AdminRegistry;
 
@@ -36,6 +39,7 @@ public class Main {
             switch(state) {
                 case INIT: {
                     System.out.println("Dzień dobry, co chcesz zrobić?");
+                    System.out.println(" 2 - zalogować się jako księgowy");
                     System.out.println(" 1 - zalogować się jako admin");
                     System.out.println(" 0 - wyjść z programu");
 
@@ -142,6 +146,7 @@ public class Main {
                     state = State.LOGGED_IN;
                     break;
                 }
+
             }
         }
         // write your code here

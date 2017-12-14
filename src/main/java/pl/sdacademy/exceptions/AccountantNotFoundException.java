@@ -1,4 +1,4 @@
 package pl.sdacademy.exceptions;
 
-public class AccountantNotFoundException {
+public class AccountantNotFoundException extends Exception {
 }
