@@ -63,7 +63,7 @@ public class AdminRegistry {
 
     public void addAdmin(String login, String password) throws IOException {
         if (checkIfAdminLoginAlreadyExists(login)) {
-            throw new IllegalArgumentException("Admin z tym loginem już istnieje!");
+
         }
         this.admins.add(new Admin(login, password));
     }

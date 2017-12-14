@@ -7,47 +7,56 @@ import java.util.ArrayList;
 
 public class AccountantRegistry {
     private static AccountantRegistry instance = null;
+
     public static AccountantRegistry getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new AccountantRegistry();
         }
         return instance;
     }
+
     private ArrayList<Accountant> accountants;
 
     public AccountantRegistry() {
         this.accountants = new ArrayList<>();
     }
 
-    public Accountant findAccountant(String login, String password) throws AccountantNotFoundException{
-        for (Accountant accountant : accountants){
-            if (accountant.getLogin().equals(login) && accountant.getPassword().equals(password)){
+    public Accountant findAccountant(String login, String password) throws AccountantNotFoundException {
+        for (Accountant accountant : accountants) {
+            if (accountant.getLogin().equals(login) && accountant.getPassword().equals(password)) {
                 return accountant;
             }
         }
         throw new AccountantNotFoundException();
     }
 
-    public boolean checkIfAcountantLoginAlreadyExist(String login){
-        for (Accountant accountant : accountants){
-            if (accountant.getLogin().equals(login)){
+    public boolean checkIfAcountantLoginAlreadyExist(String login) {
+        for (Accountant accountant : accountants) {
+            if (accountant.getLogin().equals(login)) {
                 return true;
             }
-            return false;
         }
+        return false;
     }
 
     public void addAccountant(String login, String password) throws IOException {
-        if (checkIfAcountantLoginAlreadyExist(login)){
+        if (checkIfAcountantLoginAlreadyExist(login)) {
             throw new IllegalArgumentException("Księgowy z tym loginem już istnieje!");
         }
         this.accountants.add(new Accountant(login, password));
     }
 
-    public void removeAccountant(){
-
+    public void removeAccountant(String login) throws IOException {
+        Accountant accountantToBeRemoved = null;
+        for (Accountant accountant : accountants) {
+            if (accountant.getLogin().equals(login)) {
+                accountantToBeRemoved = accountant;
+            }
+        }
+        if (accountantToBeRemoved != null) {
+            this.accountants.remove(accountantToBeRemoved);
+            System.out.println("Usunięto Księgowego");
+        }
     }
-
-
 
 }
