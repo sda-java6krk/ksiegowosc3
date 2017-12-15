@@ -2,6 +2,7 @@ package pl.sdacademy.controllers;
 
 import pl.sdacademy.models.AdminRegistry;
 import pl.sdacademy.models.CredentialsValidation;
+import pl.sdacademy.views.AdminView;
 
 import java.io.*;
 import java.util.Scanner;
@@ -31,4 +32,9 @@ public class AdminController {
     public static void removeAdmin(String login) throws IOException {
         AdminRegistry.getInstance().removeAdmin(login);
     }
+
+    public static void listAdmins() throws IOException {
+        AdminView.printAdmin(AdminRegistry.getInstance().getAdmins());
+    }
+
 }

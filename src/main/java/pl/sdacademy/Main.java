@@ -79,7 +79,6 @@ public class Main {
                         currentAccountant = AccountantRegistry.getInstance().findAccountant(login, password);
                         System.out.println("Dzień dobry " + currentAccountant.getLogin());
                         state = State.LOGGED_IN_ACCOUNTANT;
-                        //Co robi księgowy po zalogowaniu?
 
                     } catch (AccountantNotFoundException e) {
                         System.out.println("Zły login lub hasło");
@@ -138,9 +137,13 @@ public class Main {
                     System.out.println("Co chcesz zrobić?");
                     System.out.println(" 1 - wypisać wszystkie firmy");
                     System.out.println(" 2 - dodać firmę");
-                    System.out.println(" 3 - dodać nowego admina");
-                    System.out.println(" 4 - dodać nowego księgowego");
+                    System.out.println(" 3 - wypisać wszystkich adminów");
+                    System.out.println(" 4 - dodać nowego admina");
                     System.out.println(" 5 - usunąć admina");
+                    System.out.println(" 6 - wypisać wszyskich księgowych");
+                    System.out.println(" 7 - dodać nowego księgowego");
+                    System.out.println(" 8 - usunąć księgowego");
+
                     System.out.println(" 0 - wyjść z programu");
 
                     switch (scanner.nextInt()) {
@@ -156,6 +159,12 @@ public class Main {
                             break;
 
                         case 3:
+                            AdminController.listAdmins();
+                            state = State.LOGGED_IN;
+                            scanner.nextLine();
+                            break;
+
+                        case 4:
                             System.out.println("Dodaj nowego admina: \nPodaj login: ");
                             String login = scanner.next();
                             System.out.println("Podaj hasło: ");
@@ -163,7 +172,20 @@ public class Main {
                             AdminController.addAdmin(login, password);
                             break;
 
-                        case 4:
+                        case 5:
+                            System.out.println("Podaj login admina, którego chcesz usunąć: ");
+                            scanner.nextLine();
+                            String adminToBeDeleted = scanner.next();
+                            AdminController.removeAdmin(adminToBeDeleted);
+                            break;
+
+                        case 6:
+                            AccountantController.listAccountant();
+                            state = State.LOGGED_IN;
+                            scanner.nextLine();
+                            break;
+
+                        case 7:
                             System.out.print("Dodaj nowego ksiegowego:\nPodaj login: ");
                             String accountantLogin = scanner.next();
                             System.out.println();
@@ -172,11 +194,11 @@ public class Main {
                             AccountantController.addAccountant(accountantLogin, accountantPassword);
                             break;
 
-                        case 5:
-                            System.out.println("Podaj login admina, którego chcesz usunąć: ");
+                        case 8:
+                            System.out.println("Podaj login księgowego, którego chcesz usunąć: ");
                             scanner.nextLine();
-                            String adminToBeDeleted = scanner.next();
-                            AdminController.removeAdmin(adminToBeDeleted);
+                            String accountantToBeDeleted = scanner.nextLine();
+                            AccountantController.removeAccountant(accountantToBeDeleted);
                             break;
 
                         case 0:

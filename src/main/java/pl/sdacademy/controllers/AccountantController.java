@@ -3,6 +3,7 @@ package pl.sdacademy.controllers;
 
 import pl.sdacademy.models.AccountantRegistry;
 import pl.sdacademy.models.CredentialsValidation;
+import pl.sdacademy.views.AccountantView;
 
 import java.io.IOException;
 
@@ -31,6 +32,10 @@ public class AccountantController {
 
     public static void loadExistingAccountantsFromFile() throws IOException {
         AccountantRegistry.getInstance().loadExistingAccountantsFromFile();
-
     }
+
+    public static void listAccountant() throws IOException {
+        AccountantView.printAccountants(AccountantRegistry.getInstance().getAccountants());
+    }
+
 }
