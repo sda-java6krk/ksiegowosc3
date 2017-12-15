@@ -91,7 +91,6 @@ public class Main {
                 case LOGGING_IN_AS_ADMIN: {
                     System.out.println("Podaj login:");
                     String login = scanner.nextLine();
-
                     System.out.println("Podaj hasło:");
                     String password = scanner.nextLine();
 
@@ -158,6 +157,10 @@ public class Main {
                         case 3:
                             System.out.println("Dodaj nowego admina: \nPodaj login: ");
                             String login = scanner.next();
+                            if (login.contains(";")) {
+                                System.out.println("Login nie może zawierać znaku ';'");
+                                break;
+                            }
                             System.out.println("Podaj hasło: ");
                             String password = scanner.next();
                             AdminController.addAdmin(login, password);
@@ -167,6 +170,10 @@ public class Main {
                             System.out.print("Dodaj nowego ksiegowego:\nPodaj login: ");
                             String accountantLogin = scanner.next();
                             System.out.println();
+                            if (accountantLogin.contains(";")) {
+                                System.out.println("Login nie może zawierać znaku ';'");
+                                break;
+                            }
                             System.out.print("Podaj hasło: ");
                             String accountantPassword = scanner.next();
                             AccountantController.addAccountant(accountantLogin, accountantPassword);

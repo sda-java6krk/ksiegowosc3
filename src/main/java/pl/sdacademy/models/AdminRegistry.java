@@ -21,14 +21,10 @@ public class AdminRegistry {
         return instance;
     }
 
-
     private ArrayList<Admin> admins;
 
     public AdminRegistry() {
         this.admins = new ArrayList<>();
-
-        this.admins.add(new Admin("adam", "123"));
-        this.admins.add(new Admin("ziutek", "456"));
     }
 
 
@@ -54,16 +50,12 @@ public class AdminRegistry {
     }
 
 
-    public boolean checkIfAdminLoginAlreadyExists(String login) {
-        for (Admin admin : admins) {
-            if (admin.getLogin().equals(login)) return true;
-        }
-        return false;
-    }
-
     public void addAdmin(String login, String password) throws IOException {
-        if (checkIfAdminLoginAlreadyExists(login)) {
-
+        for (Admin admin : admins) {
+            if (admin.getLogin().equals(login)) {
+                System.out.println("Admin z takim loginem (" + login + ") już istnieje!");
+                return;
+            }
         }
         this.admins.add(new Admin(login, password));
     }
@@ -85,10 +77,8 @@ public class AdminRegistry {
             }
         }
         if (adminToBeRemoved != null) {
-
             this.admins.remove(adminToBeRemoved);
             System.out.println("Usunięto admina");
-
             try (FileWriter fw = new FileWriter("src/resources/adminListTemp.txt", true);
                  BufferedWriter bw = new BufferedWriter(fw);
                  PrintWriter out = new PrintWriter(bw)) {
@@ -96,16 +86,14 @@ public class AdminRegistry {
                      out.println(a.getLogin() + ";" + a.getPassword());
                  }
             }
-
-
-
             File oldFile = new File("src/resources/adminList.txt");
-            boolean success = Files.deleteIfExists(oldFile.toPath());
+            boolean oldFileDeletionStatus = Files.deleteIfExists(oldFile.toPath());
+            if (!oldFileDeletionStatus) System.out.println("Błąd przy usuwaniu admina!");
+
             File newFile = new File("src/resources/adminListTemp.txt");
-            boolean success2 = newFile.renameTo(new File("src/resources/adminList.txt"));
+            boolean newFileCreationStatus = newFile.renameTo(new File("src/resources/adminList.txt"));
+            if (!newFileCreationStatus) System.out.println("Błąd przy usuwaniu admina!");
         }
-
-
     }
 
 }
