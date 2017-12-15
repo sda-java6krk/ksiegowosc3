@@ -11,7 +11,7 @@ import java.util.Scanner;
 /**
  * Created by marcin on 13.12.2017.
  */
-public class AdminRegistry {
+public class AdminRegistry implements CredentialsValidation {
     private static AdminRegistry instance = null;
 
     public static AdminRegistry getInstance() {
