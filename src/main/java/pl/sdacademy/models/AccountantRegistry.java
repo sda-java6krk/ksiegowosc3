@@ -2,13 +2,12 @@ package pl.sdacademy.models;
 
 import pl.sdacademy.exceptions.AccountantNotFoundException;
 
-import java.io.File;
+import java.io.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class AccountantRegistry {
+public class AccountantRegistry implements CredentialsValidation{
     private static AccountantRegistry instance = null;
 
     public static AccountantRegistry getInstance() {
@@ -62,6 +61,14 @@ public class AccountantRegistry {
             this.accountants.remove(accountantToBeRemoved);
             System.out.println("Usunięto Księgowego");
         }
+    }
+    public void writeAccountantCredentialsToFile(String login, String password) throws IOException {
+        try (FileWriter fw = new FileWriter("src/resources/AccountantList.txt", true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+            out.println(login + ";" + password);
+        }
+        System.out.println("Pomyślnie dodano księgowego!");
     }
 
     public void loadExistingAccountantsFromFile() throws IOException {

@@ -2,6 +2,7 @@ package pl.sdacademy.controllers;
 
 
 import pl.sdacademy.models.AccountantRegistry;
+import pl.sdacademy.models.CredentialsValidation;
 
 import java.io.IOException;
 
@@ -10,7 +11,18 @@ import java.io.IOException;
  */
 public class AccountantController {
     public static void addAccountant(String login, String password) throws IOException {
+
+        if (!AccountantRegistry.getInstance().validateLogin(login)) {
+            System.out.println("Nie można utworzyć księgowego - niepoprawny login!");
+            return;
+        }
+        if (!AccountantRegistry.getInstance().validatePassword(password)) {
+            System.out.println("Nie można utworzyć księgowego niepoprawne hasło!");
+        }
+
+
         AccountantRegistry.getInstance().addAccountant(login, password);
+        AccountantRegistry.getInstance().writeAccountantCredentialsToFile(login, password);
     }
 
     public static void removeAccountant(String login) throws IOException {
