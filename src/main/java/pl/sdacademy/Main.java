@@ -38,18 +38,19 @@ public class Main {
             switch (state) {
                 case INIT: {
                     System.out.println("Dzień dobry, co chcesz zrobić?");
-                    System.out.println(" 2 - zalogować się jako księgowy");
                     System.out.println(" 1 - zalogować się jako admin");
+                    System.out.println(" 2 - zalogować się jako księgowy");
                     System.out.println(" 0 - wyjść z programu");
 
                     switch (scanner.nextInt()) {
-                        case 2:
-                            state = State.LOGGING_IN_AS_ACCOUNTANT;
-                            scanner.nextLine();
-                            break;
 
                         case 1:
                             state = State.LOGGING_IN_AS_ADMIN;
+                            scanner.nextLine();
+                            break;
+
+                        case 2:
+                            state = State.LOGGING_IN_AS_ACCOUNTANT;
                             scanner.nextLine();
                             break;
 
@@ -108,13 +109,13 @@ public class Main {
 
                 case LOGGED_IN_ACCOUNTANT: {
                     System.out.println("Co chcesz zrobić?");
-                    System.out.println(" 0 - wyjść z programu");
                     System.out.println(" 1 - wypisać wszystkie firmy");
+                    System.out.println(" 0 - wyjść z programu");
 
                     switch (scanner.nextInt()) {
                         case 1:
                             CompanyController.listCompanies();
-                            state = State.LOGGED_IN;
+                            state = State.LOGGED_IN_ACCOUNTANT;
                             scanner.nextLine();
                             break;
 
