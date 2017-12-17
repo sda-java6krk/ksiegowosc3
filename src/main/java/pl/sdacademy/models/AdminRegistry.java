@@ -23,7 +23,7 @@ public class AdminRegistry implements CredentialsValidation {
 
     private ArrayList<Admin> admins;
 
-    public AdminRegistry() {
+    private AdminRegistry() {
         this.admins = new ArrayList<>();
     }
 
