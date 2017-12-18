@@ -1,5 +1,7 @@
 package pl.sdacademy.models;
 
+import pl.sdacademy.exceptions.AccountantAlreadyAssignedException;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,5 +35,20 @@ public class Company {
 
     public Set<Accountant> getCompanyAccountants() {
         return companyAccountants;
+    }
+
+    public void addAccountant(Accountant accountant) throws AccountantAlreadyAssignedException {
+        if (this.companyAccountants.contains(accountant)) {
+            throw new AccountantAlreadyAssignedException();
+        }
+        this.companyAccountants.add(accountant);
+    }
+
+    public void changeName(String newName) {
+        this.name = newName;
+    }
+
+    public void changeNip(int newNip) {
+        this.nipNumber = newNip;
     }
 }

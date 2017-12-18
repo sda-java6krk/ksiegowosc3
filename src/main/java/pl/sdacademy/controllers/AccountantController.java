@@ -19,6 +19,6 @@ public class AccountantController {
 
     public static void loadExistingAccountantsFromFile() throws IOException {
         AccountantRegistry.getInstance().loadExistingAccountantsFromFile();
-
     }
+
 }
