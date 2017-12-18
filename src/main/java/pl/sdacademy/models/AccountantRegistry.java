@@ -2,13 +2,13 @@ package pl.sdacademy.models;
 
 import pl.sdacademy.exceptions.AccountantNotFoundException;
 
-import java.io.File;
+import java.io.*;
 
-import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class AccountantRegistry {
+public class AccountantRegistry implements CredentialsValidation{
     private static AccountantRegistry instance = null;
 
     public static AccountantRegistry getInstance() {
@@ -61,11 +61,35 @@ public class AccountantRegistry {
         if (accountantToBeRemoved != null) {
             this.accountants.remove(accountantToBeRemoved);
             System.out.println("Usunięto Księgowego");
+            try (FileWriter fw = new FileWriter("src/resources/accountantListTemp.txt", true);
+                 BufferedWriter bw = new BufferedWriter(fw);
+                 PrintWriter out = new PrintWriter(bw)) {
+                for (Accountant accountant : accountants) {
+                    out.println(accountant.getLogin() + ";" + accountant.getPassword());
+                }
+            }
+
+            File oldFile = new File("src/resources/accountantList.txt");
+            boolean oldFileDeletionStatus = Files.deleteIfExists(oldFile.toPath());
+            if (!oldFileDeletionStatus) System.out.println("Błąd przy usuwaniu księgowego!");
+
+            File newFile = new File("src/resources/accountantListTemp.txt");
+            boolean newFileCreationStatus = newFile.renameTo(new File("src/resources/accountantList.txt"));
+            if (!newFileCreationStatus) System.out.println("Błąd przy usuwaniu księgowego!");
+
         }
+    }
+    public void writeAccountantCredentialsToFile(String login, String password) throws IOException {
+        try (FileWriter fw = new FileWriter("src/resources/AccountantList.txt", true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+            out.println(login + ";" + password);
+        }
+        System.out.println("Pomyślnie dodano księgowego!");
     }
 
     public void loadExistingAccountantsFromFile() throws IOException {
-        File file = new File("src/resources/accountantList.txt");
+        File file = new File("src/resources/accountantList.txt);
         Scanner input = new Scanner(file);
         while (input.hasNextLine()) {
             String line = input.nextLine();
@@ -74,4 +98,7 @@ public class AccountantRegistry {
         }
     }
 
+    public ArrayList<Accountant> getAccountants() {
+        return accountants;
+    }
 }

@@ -96,4 +96,7 @@ public class AdminRegistry implements CredentialsValidation {
         }
     }
 
+    public ArrayList<Admin> getAdmins() {
+        return admins;
+    }
 }
