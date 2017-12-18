@@ -14,8 +14,8 @@ import java.util.Scanner;
  */
 public class CompanyRegistry {
     private static CompanyRegistry instance = null;
-    private static final String COMPANYLISTFILEPATCH = "src/resources/companyList.txt";
-    private static final String COMPANYLISTTEMPFILEPATCH = "src/resources/companyList.tmp";
+    private static final String COMPANY_LIST_FILEPATH = "src/resources/companyList.txt";
+    private static final String COMPANY_LIST_TEMP_FILEPATH = "src/resources/companyList.tmp";
 
     public static CompanyRegistry getInstance() {
         if (instance == null) {
@@ -67,7 +67,7 @@ public class CompanyRegistry {
 
     // saving data of all companies to file including information about accountants assigned to companies
     public void writeCompanyToFile(Company company) throws IOException {
-        try (FileWriter fw = new FileWriter(COMPANYLISTFILEPATCH, true);
+        try (FileWriter fw = new FileWriter(COMPANY_LIST_FILEPATH, true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
             out.print(company.getName() + ";" + company.getYearFound() + ";" + company.getNipNumber() + ";");
@@ -94,7 +94,7 @@ public class CompanyRegistry {
     //rewrites database file
     private void rewriteFile() throws IOException {
 
-        try (FileWriter fw = new FileWriter(COMPANYLISTTEMPFILEPATCH, true);
+        try (FileWriter fw = new FileWriter(COMPANY_LIST_TEMP_FILEPATH, true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
             for (Company company : companies) {
@@ -106,12 +106,12 @@ public class CompanyRegistry {
                 System.out.println();
             }
         }
-        File oldFile = new File(COMPANYLISTFILEPATCH);
+        File oldFile = new File(COMPANY_LIST_FILEPATH);
         boolean oldFileDeletionStatus = Files.deleteIfExists(oldFile.toPath());
         if (!oldFileDeletionStatus) System.out.println("Błąd przy usuwaniu firmy z bazy danych!");
 
-        File newFile = new File(COMPANYLISTTEMPFILEPATCH);
-        boolean newFileCreationStatus = newFile.renameTo(new File(COMPANYLISTFILEPATCH));
+        File newFile = new File(COMPANY_LIST_TEMP_FILEPATH);
+        boolean newFileCreationStatus = newFile.renameTo(new File(COMPANY_LIST_FILEPATH));
         if (!newFileCreationStatus) System.out.println("Błąd przy usuwaniu firmy z bazy danych!");
     }
 
