@@ -11,10 +11,10 @@ import java.util.Set;
 public class Company {
     private String name;
     private int yearFound;
-    private int nipNumber;
+    private String nipNumber;
     private Set<Accountant> companyAccountants;
 
-    public Company(String name, int yearFound, int nipNumber) {
+    public Company(String name, int yearFound, String nipNumber) {
         this.name = name;
         this.yearFound = yearFound;
         this.nipNumber = nipNumber;
@@ -29,7 +29,7 @@ public class Company {
         return yearFound;
     }
 
-    public int getNipNumber() {
+    public String getNipNumber() {
         return nipNumber;
     }
 
@@ -48,7 +48,7 @@ public class Company {
         this.name = newName;
     }
 
-    public void changeNip(int newNip) {
+    public void changeNip(String newNip) {
         this.nipNumber = newNip;
     }
 }
