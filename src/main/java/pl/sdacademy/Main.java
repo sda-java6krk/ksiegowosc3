@@ -5,6 +5,7 @@ import pl.sdacademy.controllers.AdminController;
 import pl.sdacademy.controllers.CompanyController;
 import pl.sdacademy.exceptions.AccountantNotFoundException;
 import pl.sdacademy.exceptions.AdminNotFoundException;
+import pl.sdacademy.exceptions.NipAlreadyTakenException;
 import pl.sdacademy.models.Accountant;
 import pl.sdacademy.models.AccountantRegistry;
 import pl.sdacademy.models.Admin;
@@ -25,7 +26,7 @@ public class Main {
         EXIT,
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, NipAlreadyTakenException {
         State state = State.INIT;
         AdminController.loadExistingAdminsFromFile();
         Scanner scanner = new Scanner(System.in);
@@ -223,7 +224,10 @@ public class Main {
                     int yearFound = scanner.nextInt();
                     scanner.nextLine();
 
-                    CompanyController.createCompany(name, yearFound);
+                    System.out.println("Podaj numer NIP firmy:");
+                    String nipNumber = scanner.nextLine();
+
+                    CompanyController.createCompany(name, yearFound, nipNumber);
 
                     state = State.LOGGED_IN;
                     break;

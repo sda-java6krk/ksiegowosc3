@@ -30,8 +30,8 @@ public class CompanyRegistry {
     public CompanyRegistry() {
         this.companies = new ArrayList<>();
 
-        this.companies.add(new Company("Ziutex sp. z o.o.", 1990, 123123));
-        this.companies.add(new Company("Krakbud s.j.", 1995, 345345));
+        this.companies.add(new Company("Ziutex sp. z o.o.", 1990, "123123"));
+        this.companies.add(new Company("Krakbud s.j.", 1995, "345345"));
     }
 
     // listing all companies
@@ -57,7 +57,7 @@ public class CompanyRegistry {
 
             String line = input.nextLine();
             String[] companyDetails = line.split(";");
-            add(new Company(companyDetails[0], Integer.parseInt(companyDetails[1]), Integer.parseInt(companyDetails[2])));
+            add(new Company(companyDetails[0], Integer.parseInt(companyDetails[1]), companyDetails[2]));
             for (int i = 2; i < companyDetails.length - 1; i++) {
                 this.companies.get(this.companies.size() - 1).getCompanyAccountants().add(accountantRegistry.findAccountantByLogin(companyDetails[i]));
             }
@@ -82,7 +82,7 @@ public class CompanyRegistry {
     }
 
     // removes company and all its data from the database, rewrites db file.
-    public void deleteCompany(int nipNumber) throws IOException {
+    public void deleteCompany(String nipNumber) throws IOException {
         Company companyToBeRemoved = findCompanyByNipNumber(nipNumber);
         if (companyToBeRemoved != null) {
             this.companies.remove(companyToBeRemoved);
@@ -116,10 +116,10 @@ public class CompanyRegistry {
     }
 
     // checking if company with given nip numbers already added to the database. Returns Company or null.
-    public Company findCompanyByNipNumber(int nipNumber) {
+    public Company findCompanyByNipNumber(String nipNumber) {
         for (Company company : companies
                 ) {
-            if (company.getNipNumber() == nipNumber) {
+            if (company.getNipNumber().equals(nipNumber)) {
                 return company;
             }
         }
@@ -131,7 +131,7 @@ public class CompanyRegistry {
         rewriteFile();
     }
 
-    public void changeCompanyNip(Company company, int newNip) throws IOException {
+    public void changeCompanyNip(Company company, String newNip) throws IOException {
         company.changeNip(newNip);
         rewriteFile();
     }

@@ -15,7 +15,7 @@ import java.io.IOException;
  * Created by marcin on 13.12.2017.
  */
 public class CompanyController {
-    public static void createCompany(String name, int yearFound, int nipNumber) throws IOException, NipAlreadyTakenException {
+    public static void createCompany(String name, int yearFound, String nipNumber) throws IOException, NipAlreadyTakenException {
         CompanyRegistry.getInstance().add(new Company(name, yearFound, nipNumber));
     }
 
@@ -32,7 +32,7 @@ public class CompanyController {
         CompanyRegistry.getInstance().loadCompanyFromFile(accountantRegistry);
     }
 
-    public static void removeCompanyFromDatabase(CompanyRegistry companyRegistry, int nipNumber) throws IOException {
+    public static void removeCompanyFromDatabase(CompanyRegistry companyRegistry, String nipNumber) throws IOException {
         companyRegistry.deleteCompany(nipNumber);
     }
 
@@ -40,7 +40,7 @@ public class CompanyController {
         companyRegistry.changeCompanyName(company,newName);
     }
 
-    public static void changeCompanyNip(CompanyRegistry companyRegistry, Company company, int newNip) throws IOException {
+    public static void changeCompanyNip(CompanyRegistry companyRegistry, Company company, String newNip) throws IOException {
         companyRegistry.changeCompanyNip(company,newNip);
     }
 }
