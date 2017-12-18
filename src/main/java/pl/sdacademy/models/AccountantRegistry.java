@@ -89,7 +89,7 @@ public class AccountantRegistry implements CredentialsValidation{
     }
 
     public void loadExistingAccountantsFromFile() throws IOException {
-        File file = new File("src/resources/accountantList.txt);
+        File file = new File("src/resources/accountantList.txt");
         Scanner input = new Scanner(file);
         while (input.hasNextLine()) {
             String line = input.nextLine();
