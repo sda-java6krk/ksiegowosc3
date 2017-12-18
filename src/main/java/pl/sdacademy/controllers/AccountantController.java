@@ -37,5 +37,4 @@ public class AccountantController {
     public static void listAccountant() throws IOException {
         AccountantView.printAccountants(AccountantRegistry.getInstance().getAccountants());
     }
-
 }

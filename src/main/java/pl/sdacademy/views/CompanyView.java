@@ -1,5 +1,6 @@
 package pl.sdacademy.views;
 
+import pl.sdacademy.models.Accountant;
 import pl.sdacademy.models.Company;
 
 import java.util.List;
@@ -9,8 +10,21 @@ import java.util.List;
  */
 public class CompanyView {
     public static void printCompanies(List<Company> companies) {
-        for(Company company : companies) {
-            System.out.println(company.getName() + " (rok założenia: " + company.getYearFound() + ")");
+        for (Company company : companies) {
+            System.out.println(company.getName() + " (rok założenia: " + company.getYearFound() + "numer NIP: " + company.getNipNumber() + ")");
+            System.out.println("Przypisani księgowi: ");
+
+            if (company.getCompanyAccountants().size() > 0) {
+                System.out.print("\t");
+
+                for (Accountant accountant : company.getCompanyAccountants()
+                        ) {
+                    System.out.print(accountant.getLogin() + " ");
+                }
+                System.out.println();
+            } else {
+                System.out.println("\tBrak przypisanych księgowych!");
+            }
         }
     }
 }

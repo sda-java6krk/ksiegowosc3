@@ -101,4 +101,13 @@ public class AccountantRegistry implements CredentialsValidation{
     public ArrayList<Accountant> getAccountants() {
         return accountants;
     }
+    // finding accountant by login given as String. Returns accountant or throws exception.
+    public Accountant findAccountantByLogin(String login) throws AccountantNotFoundException {
+        for (Accountant accountant : accountants) {
+            if (accountant.getLogin().equals(login)) {
+                return accountant;
+            }
+        }
+        throw new AccountantNotFoundException();
+    }
 }
