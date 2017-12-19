@@ -9,3 +9,22 @@ ETAP 1
 3. Dodaj możliwość zalogowania się jako księgowy albo jako admin
    (teraz jest tylko admin).
 4. Zapisuj konta księgowych i administratorów na dysku.
+
+Księgowy powinien móc dodawać faktury.
+
+Faktura jest przypisana do Firmy oraz Kontrahenta (w zamyśle to był model Client, ale może to niezbyt fortunna nazwa?)
+
+Faktura ma:
+
+rodzaj (sprzedaż/zakup)
+numer (unikalny ale są osobne pule w ramach faktur sprzedażowych i zakupowych)
+kwotę netto
+stawkę VAT (8% lub 23%)
+stan (zapłacono/niezapłacono)
+Te dane powinny być podawane przy wprowadzaniu faktury i zapisywane na dysku.
+
+Kontrahent jest identyfikowany przez NIP. Podczas dodawania faktury system powinien spytać o NIP kontrahenta.
+Jeśli klienta jeszcze nie ma w systemie powinien zapytać od razu o jego nazwę i go dodać przy okazji dodawania faktury.
+Jeśli kontrahent już jest w systemie powinien wyświetlić nazwę znalezionego kontrahenta z prośbą o potwierdzenie,
+czy to na pewno właściwy.
+
