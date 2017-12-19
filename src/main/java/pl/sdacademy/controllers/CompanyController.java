@@ -2,9 +2,9 @@ package pl.sdacademy.controllers;
 
 import pl.sdacademy.exceptions.AccountantAlreadyAssignedException;
 import pl.sdacademy.exceptions.AccountantNotFoundException;
+import pl.sdacademy.exceptions.CompanyNotFoundException;
 import pl.sdacademy.exceptions.NipAlreadyTakenException;
 import pl.sdacademy.models.Accountant;
-import pl.sdacademy.models.AccountantRegistry;
 import pl.sdacademy.models.Company;
 import pl.sdacademy.models.CompanyRegistry;
 import pl.sdacademy.views.CompanyView;
@@ -24,23 +24,19 @@ public class CompanyController {
         CompanyView.printCompanies(CompanyRegistry.getInstance().getCompanies());
     }
 
-    public static void assignAccountantToCompany(Company company, Accountant accountant) throws IOException, AccountantAlreadyAssignedException {
-        company.addAccountant(accountant);
+    public static void removeCompanyFromDatabase(String nipNumber) throws IOException, CompanyNotFoundException {
+        CompanyRegistry.getInstance().deleteCompany(nipNumber);
     }
 
-    public static void loadCompaniesFromFile(AccountantRegistry accountantRegistry) throws IOException, AccountantNotFoundException, NipAlreadyTakenException {
-        CompanyRegistry.getInstance().loadCompanyFromFile(accountantRegistry);
+    public static void changeCompanyName(String companyNip, String newName) throws IOException, CompanyNotFoundException {
+        CompanyRegistry.getInstance().changeCompanyName(companyNip, newName);
     }
 
-    public static void removeCompanyFromDatabase(CompanyRegistry companyRegistry, String nipNumber) throws IOException {
-        companyRegistry.deleteCompany(nipNumber);
+    public static void changeCompanyNip(String companyNip, String newNip) throws IOException, CompanyNotFoundException, NipAlreadyTakenException {
+        CompanyRegistry.getInstance().changeCompanyNip(companyNip, newNip);
     }
 
-    public static void changeCompanyName(CompanyRegistry companyRegistry, Company company, String newName) throws IOException {
-        companyRegistry.changeCompanyName(company,newName);
-    }
-
-    public static void changeCompanyNip(CompanyRegistry companyRegistry, Company company, String newNip) throws IOException {
-        companyRegistry.changeCompanyNip(company,newNip);
+    public static void assignAccountantToCompany(String companyNip, String accountantLogin) throws CompanyNotFoundException, AccountantAlreadyAssignedException, AccountantNotFoundException {
+        CompanyRegistry.getInstance().assignAccountantToCompany(companyNip,accountantLogin);
     }
 }

@@ -1,6 +1,7 @@
 package pl.sdacademy.models;
 
 import pl.sdacademy.exceptions.AccountantAlreadyAssignedException;
+import pl.sdacademy.exceptions.AccountantNotFoundException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,11 +38,15 @@ public class Company {
         return companyAccountants;
     }
 
-    public void addAccountant(Accountant accountant) throws AccountantAlreadyAssignedException {
-        if (this.companyAccountants.contains(accountant)) {
-            throw new AccountantAlreadyAssignedException();
+    public void assignAccountant(String accountantLogin) throws AccountantAlreadyAssignedException, AccountantNotFoundException {
+        Accountant accountantToBeAssigned = AccountantRegistry.findAccountantByLogin(accountantLogin);
+        for (Accountant accountant : this.companyAccountants
+                ) {
+            if (accountant.equals(accountantToBeAssigned)) {
+                throw new AccountantAlreadyAssignedException();
+            }
         }
-        this.companyAccountants.add(accountant);
+        this.companyAccountants.add(accountantToBeAssigned);
     }
 
     public void changeName(String newName) {

@@ -1,10 +1,11 @@
 package pl.sdacademy.models;
 
+import pl.sdacademy.exceptions.AccountantAlreadyAssignedException;
 import pl.sdacademy.exceptions.AccountantNotFoundException;
+import pl.sdacademy.exceptions.CompanyNotFoundException;
 import pl.sdacademy.exceptions.NipAlreadyTakenException;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,7 +16,6 @@ import java.util.Scanner;
 public class CompanyRegistry {
     private static CompanyRegistry instance = null;
     private static final String COMPANY_LIST_FILEPATH = "src/resources/companyList.txt";
-    private static final String COMPANY_LIST_TEMP_FILEPATH = "src/resources/companyList.tmp";
 
     public static CompanyRegistry getInstance() {
         if (instance == null) {
@@ -29,9 +29,9 @@ public class CompanyRegistry {
 
     public CompanyRegistry() {
         this.companies = new ArrayList<>();
-
-        this.companies.add(new Company("Ziutex sp. z o.o.", 1990, "123123"));
-        this.companies.add(new Company("Krakbud s.j.", 1995, "345345"));
+//
+//        this.companies.add(new Company("Ziutex sp. z o.o.", 1990, "123123"));
+//        this.companies.add(new Company("Krakbud s.j.", 1995, "345345"));
     }
 
     // listing all companies
@@ -41,7 +41,7 @@ public class CompanyRegistry {
 
     // adding a specific company to the database. Such method assign no accountants to the company
     public void add(Company company) throws IOException, NipAlreadyTakenException {
-        if (findCompanyByNipNumber(company.getNipNumber()) == null) {
+        if (getCompanyByNipNumber(company.getNipNumber()) == null) {
             this.companies.add(company);
             writeCompanyToFile(company);
         } else {
@@ -50,8 +50,12 @@ public class CompanyRegistry {
     }
 
     // loading data of all companies from file including information about accountants assigned to companies
-    public void loadCompanyFromFile(AccountantRegistry accountantRegistry) throws IOException, AccountantNotFoundException, NipAlreadyTakenException {
-        File file = new File("src/resources/companyList.txt");
+    public void loadCompaniesFromFile(AccountantRegistry accountantRegistry) throws IOException, AccountantNotFoundException, NipAlreadyTakenException {
+        File file = new File(COMPANY_LIST_FILEPATH);
+        //if file does not exist method stops at this point.
+        if (!file.exists()) {
+            return;
+        }
         Scanner input = new Scanner(file);
         while (input.hasNextLine()) {
 
@@ -78,23 +82,23 @@ public class CompanyRegistry {
             }
             System.out.println();
         }
-        System.out.println("Pomyślnie dodano firmę!");
     }
 
     // removes company and all its data from the database, rewrites db file.
-    public void deleteCompany(String nipNumber) throws IOException {
-        Company companyToBeRemoved = findCompanyByNipNumber(nipNumber);
+    public void deleteCompany(String nipNumber) throws IOException, CompanyNotFoundException {
+        Company companyToBeRemoved = getCompanyByNipNumber(nipNumber);
         if (companyToBeRemoved != null) {
             this.companies.remove(companyToBeRemoved);
-            System.out.println("Firma usunięta z bazy danych!");
             rewriteFile();
+        } else {
+            throw new CompanyNotFoundException();
         }
     }
 
     //rewrites database file
     private void rewriteFile() throws IOException {
 
-        try (FileWriter fw = new FileWriter(COMPANY_LIST_TEMP_FILEPATH, true);
+        try (FileWriter fw = new FileWriter(COMPANY_LIST_FILEPATH, false);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
             for (Company company : companies) {
@@ -106,17 +110,10 @@ public class CompanyRegistry {
                 System.out.println();
             }
         }
-        File oldFile = new File(COMPANY_LIST_FILEPATH);
-        boolean oldFileDeletionStatus = Files.deleteIfExists(oldFile.toPath());
-        if (!oldFileDeletionStatus) System.out.println("Błąd przy usuwaniu firmy z bazy danych!");
-
-        File newFile = new File(COMPANY_LIST_TEMP_FILEPATH);
-        boolean newFileCreationStatus = newFile.renameTo(new File(COMPANY_LIST_FILEPATH));
-        if (!newFileCreationStatus) System.out.println("Błąd przy usuwaniu firmy z bazy danych!");
     }
 
     // checking if company with given nip numbers already added to the database. Returns Company or null.
-    public Company findCompanyByNipNumber(String nipNumber) {
+    public Company getCompanyByNipNumber(String nipNumber) {
         for (Company company : companies
                 ) {
             if (company.getNipNumber().equals(nipNumber)) {
@@ -126,13 +123,27 @@ public class CompanyRegistry {
         return null;
     }
 
-    public void changeCompanyName(Company company, String newName) throws IOException {
-        company.changeName(newName);
+    public void changeCompanyName(String nipNumber, String newName) throws IOException, CompanyNotFoundException {
+        getCompanyByNipNumber(nipNumber).changeName(newName);
         rewriteFile();
     }
 
-    public void changeCompanyNip(Company company, String newNip) throws IOException {
-        company.changeNip(newNip);
+    public void changeCompanyNip(String nipNumber, String newNip) throws IOException, CompanyNotFoundException, NipAlreadyTakenException {
+        Company editedCompany = getCompanyByNipNumber(nipNumber);
+
+        if (getCompanyByNipNumber(newNip) != null) {
+            throw new NipAlreadyTakenException();
+        }
+
+        editedCompany.changeName(newNip);
         rewriteFile();
+    }
+
+    public void assignAccountantToCompany(String companyNip, String accountantLogin) throws CompanyNotFoundException, AccountantAlreadyAssignedException, AccountantNotFoundException {
+        Company company = getCompanyByNipNumber(companyNip);
+        if (company == null) {
+            throw new CompanyNotFoundException();
+        }
+        company.assignAccountant(accountantLogin);
     }
 }

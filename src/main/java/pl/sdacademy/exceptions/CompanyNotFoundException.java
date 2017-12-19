@@ -1,4 +1,4 @@
 package pl.sdacademy.exceptions;
 
-public class CompanyNotFoundException {
+public class CompanyNotFoundException extends Exception {
 }
