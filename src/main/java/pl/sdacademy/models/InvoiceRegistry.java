@@ -41,12 +41,11 @@ public class InvoiceRegistry {
     }
 
 
-    public String generateInvoiceNumber(String nipNumber) {
+    public String generateInvoiceNumber(String nipNumber, int counter) {
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
-        int number = salesInvoicesList.size() + purchaseInvoicesList.size()+1;
 
-        String temp="FV/"+nipNumber +"/" + String.valueOf(year)+ "/" + String.valueOf(month)+"/" +String.valueOf(number) ;
+        String temp="FV/"+nipNumber +"/" + String.valueOf(year)+ "/" + String.valueOf(month)+"/" +String.valueOf(counter);
 
         return temp;
     }
