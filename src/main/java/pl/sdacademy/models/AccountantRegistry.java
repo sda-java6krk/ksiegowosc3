@@ -3,12 +3,12 @@ package pl.sdacademy.models;
 import pl.sdacademy.exceptions.AccountantNotFoundException;
 
 import java.io.*;
-
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class AccountantRegistry implements CredentialsValidation{
+public class AccountantRegistry implements CredentialsValidation {
     private static AccountantRegistry instance = null;
 
     public static AccountantRegistry getInstance() {
@@ -22,8 +22,8 @@ public class AccountantRegistry implements CredentialsValidation{
 
     public AccountantRegistry() {
         this.accountants = new ArrayList<>();
-
-        this.accountants.add(new Accountant("janek", "asd"));
+//
+//        this.accountants.add(new Accountant("janek", "asd"));
     }
 
     public Accountant findAccountant(String login, String password) throws AccountantNotFoundException {
@@ -79,6 +79,7 @@ public class AccountantRegistry implements CredentialsValidation{
 
         }
     }
+
     public void writeAccountantCredentialsToFile(String login, String password) throws IOException {
         try (FileWriter fw = new FileWriter("src/resources/AccountantList.txt", true);
              BufferedWriter bw = new BufferedWriter(fw);
@@ -103,8 +104,10 @@ public class AccountantRegistry implements CredentialsValidation{
     }
 
     // finding accountant by login given as String. Returns accountant or throws exception.
-    public Accountant findAccountantByLogin(String login) throws AccountantNotFoundException {
-        for (Accountant accountant : accountants) {
+    public static Accountant findAccountantByLogin(String login) throws AccountantNotFoundException {
+        List<Accountant> accountantsAssigned = AccountantRegistry.getInstance().getAccountants();
+
+        for (Accountant accountant : accountantsAssigned) {
             if (accountant.getLogin().equals(login)) {
                 return accountant;
             }

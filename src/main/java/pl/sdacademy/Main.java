@@ -3,13 +3,8 @@ package pl.sdacademy;
 import pl.sdacademy.controllers.AccountantController;
 import pl.sdacademy.controllers.AdminController;
 import pl.sdacademy.controllers.CompanyController;
-import pl.sdacademy.exceptions.AccountantNotFoundException;
-import pl.sdacademy.exceptions.AdminNotFoundException;
-import pl.sdacademy.exceptions.NipAlreadyTakenException;
-import pl.sdacademy.models.Accountant;
-import pl.sdacademy.models.AccountantRegistry;
-import pl.sdacademy.models.Admin;
-import pl.sdacademy.models.AdminRegistry;
+import pl.sdacademy.exceptions.*;
+import pl.sdacademy.models.*;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -20,19 +15,30 @@ public class Main {
         INIT,
         LOGGING_IN_AS_ADMIN,
         LOGGING_IN_AS_ACCOUNTANT,
-        LOGGED_IN,
-        LOGGED_IN_ACCOUNTANT,
+        LOGGED_IN_AS_ADMIN,
+        LOGGED_IN_AS_ACCOUNTANT,
+        MANAGING_COMPANIES,
+        MANAGING_ADMINS,
+        MANAGING_ACCOUNTANTS,
         CREATING_COMPANY,
         EXIT,
     }
 
-    public static void main(String[] args) throws IOException, NipAlreadyTakenException {
+    public static void main(String[] args) throws IOException {
         State state = State.INIT;
-        AdminController.loadExistingAdminsFromFile();
-        Scanner scanner = new Scanner(System.in);
 
-        Admin currentAdmin = null;
-        Accountant currentAccountant = null;
+        AdminRegistry.getInstance().loadExistingAdminsFromFile();
+        AccountantRegistry.getInstance().loadExistingAccountantsFromFile();
+        try {
+            CompanyRegistry.getInstance().loadCompaniesFromFile(AccountantRegistry.getInstance());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Błąd odczytu z pliku.");
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        Admin currentAdmin;
+        Accountant currentAccountant;
 
 
         while (state != State.EXIT) {
@@ -79,7 +85,7 @@ public class Main {
                     try {
                         currentAccountant = AccountantRegistry.getInstance().findAccountant(login, password);
                         System.out.println("Dzień dobry " + currentAccountant.getLogin());
-                        state = State.LOGGED_IN_ACCOUNTANT;
+                        state = State.LOGGED_IN_AS_ACCOUNTANT;
 
                     } catch (AccountantNotFoundException e) {
                         System.out.println("Zły login lub hasło");
@@ -98,7 +104,7 @@ public class Main {
                     try {
                         currentAdmin = AdminRegistry.getInstance().findAdmin(login, password);
                         System.out.println("Dzień dobry " + currentAdmin.getLogin());
-                        state = State.LOGGED_IN;
+                        state = State.LOGGED_IN_AS_ADMIN;
 
                     } catch (AdminNotFoundException e) {
                         System.out.println("Zły login lub hasło");
@@ -107,7 +113,7 @@ public class Main {
                     break;
                 }
 
-                case LOGGED_IN_ACCOUNTANT: {
+                case LOGGED_IN_AS_ACCOUNTANT: {
                     System.out.println("Co chcesz zrobić?");
                     System.out.println(" 1 - wypisać wszystkie firmy");
                     System.out.println(" 0 - wyjść z programu");
@@ -115,7 +121,7 @@ public class Main {
                     switch (scanner.nextInt()) {
                         case 1:
                             CompanyController.listCompanies();
-                            state = State.LOGGED_IN_ACCOUNTANT;
+                            state = State.LOGGED_IN_AS_ACCOUNTANT;
                             scanner.nextLine();
                             break;
 
@@ -134,23 +140,150 @@ public class Main {
 
                 }
 
-                case LOGGED_IN: {
+                case LOGGED_IN_AS_ADMIN: {
+                    System.out.println("Co chcesz zrobić?");
+                    System.out.println(" 1 - Zarządzanie administratorami");
+                    System.out.println(" 2 - Zarządzanie księgowymi");
+                    System.out.println(" 3 - Zarządzanie firmami");
+
+                    System.out.println(" 0 - Wyjście z programu");
+
+                    switch (scanner.nextInt()) {
+                        case 1:
+                            state = State.MANAGING_ADMINS;
+                            scanner.nextLine();
+                            break;
+
+                        case 2:
+                            state = State.MANAGING_ACCOUNTANTS;
+                            scanner.nextLine();
+                            break;
+
+                        case 3:
+                            state = State.MANAGING_COMPANIES;
+                            scanner.nextLine();
+                            break;
+
+                        case 0:
+                            state = State.EXIT;
+                            scanner.nextLine();
+                            break;
+
+                        default:
+                            System.out.println("Zła odpowiedź");
+                            state = State.LOGGED_IN_AS_ADMIN;
+                            scanner.nextLine();
+                            break;
+                    }
+                    break;
+                }
+
+                case MANAGING_ADMINS: {
+                    System.out.println("Co chcesz zrobić?");
+                    System.out.println(" 1 - wypisać wszystkich adminów");
+                    System.out.println(" 2 - dodać nowego admina");
+                    System.out.println(" 3 - usunąć admina");
+
+                    System.out.println(" 0 - wyjść do menu głównego");
+
+                    switch (scanner.nextInt()) {
+
+                        case 1:
+                            AdminController.listAdmins();
+                            state = State.MANAGING_ADMINS;
+                            scanner.nextLine();
+                            break;
+
+                        case 2:
+                            System.out.println("Dodaj nowego admina: \nPodaj login: ");
+                            String login = scanner.next();
+                            System.out.println("Podaj hasło: ");
+                            String password = scanner.next();
+                            AdminController.addAdmin(login, password);
+                            break;
+
+                        case 3:
+                            System.out.println("Podaj login admina, którego chcesz usunąć: ");
+                            scanner.nextLine();
+                            String adminToBeDeleted = scanner.next();
+                            AdminController.removeAdmin(adminToBeDeleted);
+                            break;
+
+                        case 0:
+                            state = State.LOGGED_IN_AS_ADMIN;
+                            scanner.nextLine();
+                            break;
+
+                        default:
+                            System.out.println("Zła odpowiedź");
+                            state = State.MANAGING_ADMINS;
+                            scanner.nextLine();
+                            break;
+                    }
+                    break;
+                }
+
+                case MANAGING_ACCOUNTANTS: {
+                    System.out.println("Co chcesz zrobić?");
+                    System.out.println(" 1 - wypisać księgowych");
+                    System.out.println(" 2 - dodać nowego księgowego");
+                    System.out.println(" 3 - usunąć księgowego");
+
+                    System.out.println(" 0 - wyjść do menu głównego");
+
+                    switch (scanner.nextInt()) {
+
+                        case 1:
+                            AccountantController.listAccountant();
+                            state = State.MANAGING_ACCOUNTANTS;
+                            scanner.nextLine();
+                            break;
+
+                        case 2:
+                            System.out.print("Dodaj nowego ksiegowego:\nPodaj login: ");
+                            String accountantLogin = scanner.next();
+                            System.out.println();
+                            System.out.print("Podaj hasło: ");
+                            String accountantPassword = scanner.next();
+                            AccountantController.addAccountant(accountantLogin, accountantPassword);
+                            break;
+
+                        case 3:
+                            System.out.println("Podaj login księgowego, którego chcesz usunąć: ");
+                            scanner.nextLine();
+                            String accountantToBeDeleted = scanner.nextLine();
+                            AccountantController.removeAccountant(accountantToBeDeleted);
+                            break;
+
+                        case 0:
+                            state = State.LOGGED_IN_AS_ADMIN;
+                            scanner.nextLine();
+                            break;
+
+                        default:
+                            System.out.println("Zła odpowiedź");
+                            state = State.MANAGING_ACCOUNTANTS;
+                            scanner.nextLine();
+                            break;
+                    }
+                    break;
+                }
+
+                case MANAGING_COMPANIES: {
                     System.out.println("Co chcesz zrobić?");
                     System.out.println(" 1 - wypisać wszystkie firmy");
-                    System.out.println(" 2 - dodać firmę");
-                    System.out.println(" 3 - wypisać wszystkich adminów");
-                    System.out.println(" 4 - dodać nowego admina");
-                    System.out.println(" 5 - usunąć admina");
-                    System.out.println(" 6 - wypisać wszyskich księgowych");
-                    System.out.println(" 7 - dodać nowego księgowego");
-                    System.out.println(" 8 - usunąć księgowego");
+                    System.out.println(" 2 - dodać nową firmę do bazy danych");
+                    System.out.println(" 3 - usunąć firmę z bazy danych");
+                    System.out.println(" 4 - zmienić nazwę firmy");
+                    System.out.println(" 5 - zmienić numer NIP firmy");
+                    System.out.println(" 6 - przypisać księgowego do firmy");
 
-                    System.out.println(" 0 - wyjść z programu");
+                    System.out.println(" 0 - wyjść do menu głównego");
 
                     switch (scanner.nextInt()) {
                         case 1:
                             CompanyController.listCompanies();
-                            state = State.LOGGED_IN;
+                            state = State.MANAGING_COMPANIES;
                             scanner.nextLine();
                             break;
 
@@ -160,56 +293,74 @@ public class Main {
                             break;
 
                         case 3:
-                            AdminController.listAdmins();
-                            state = State.LOGGED_IN;
                             scanner.nextLine();
+                            System.out.println("Podaj numer NIP firmy, którą chcesz usunąć: ");
+                            String companyToBeDeleted = scanner.nextLine();
+                            try {
+                                CompanyController.removeCompanyFromDatabase(companyToBeDeleted);
+                                System.out.println("Firma pomyślnie usunięta z bazy danych!");
+                            } catch (CompanyNotFoundException e) {
+                                System.out.println("Firma o podanym numerze NIP nie została odnaleziona w bazie danych!");
+                            }
                             break;
 
-                        case 4:
-                            System.out.println("Dodaj nowego admina: \nPodaj login: ");
-                            String login = scanner.next();
-                            System.out.println("Podaj hasło: ");
-                            String password = scanner.next();
-                            AdminController.addAdmin(login, password);
-                            break;
-
-                        case 5:
-                            System.out.println("Podaj login admina, którego chcesz usunąć: ");
+                        case 4: {
                             scanner.nextLine();
-                            String adminToBeDeleted = scanner.next();
-                            AdminController.removeAdmin(adminToBeDeleted);
-                            break;
+                            System.out.println("Podaj numer NIP firmy, której nazwę chcesz zmienić: ");
+                            String companyNip = scanner.nextLine();
+                            System.out.println("Podaj nową nazwę: ");
+                            String newName = scanner.nextLine();
+                            try {
+                                CompanyController.changeCompanyName(companyNip, newName);
+                                System.out.println("Pomyślnie zmieniono nazwę firmy");
+                            } catch (CompanyNotFoundException e) {
+                                System.out.println("Firma o podanym numerze NIP nie została odnaleziona w bazie danych!");
+                            }
+                        }
+                        break;
 
-                        case 6:
-                            AccountantController.listAccountant();
-                            state = State.LOGGED_IN;
+                        case 5: {
                             scanner.nextLine();
-                            break;
+                            System.out.println("Podaj numer NIP firmy, której chcesz zmienić numer NIP: ");
+                            String companyNip = scanner.nextLine();
+                            System.out.println("Podaj nowy numer NIP: ");
+                            String newNip = scanner.nextLine();
+                            try {
+                                CompanyController.changeCompanyNip(companyNip, newNip);
+                                System.out.println("Pomyślnie zmieniono nazwę firmy");
+                            } catch (CompanyNotFoundException e) {
+                                System.out.println("Firma o podanym numerze NIP nie została odnaleziona w bazie danych!");
+                            } catch (NipAlreadyTakenException e) {
+                                System.out.println("Podany numer NIP jest przypisany do innej firmy! Zmiana niemożliwa!");
+                            }
+                        }
+                        break;
 
-                        case 7:
-                            System.out.print("Dodaj nowego ksiegowego:\nPodaj login: ");
-                            String accountantLogin = scanner.next();
-                            System.out.println();
-                            System.out.print("Podaj hasło: ");
-                            String accountantPassword = scanner.next();
-                            AccountantController.addAccountant(accountantLogin, accountantPassword);
-                            break;
-
-                        case 8:
-                            System.out.println("Podaj login księgowego, którego chcesz usunąć: ");
+                        case 6: {
                             scanner.nextLine();
-                            String accountantToBeDeleted = scanner.nextLine();
-                            AccountantController.removeAccountant(accountantToBeDeleted);
+                            System.out.println("Podaj numer NIP firmy, której chcesz przydzielić księgowego: ");
+                            String companyNip = scanner.nextLine();
+                            System.out.println("Podaj login księgowego, którego chcesz przypisać do firmy: ");
+                            String accountantLogin = scanner.nextLine();
+                            try {
+                                CompanyController.assignAccountantToCompany(companyNip, accountantLogin);
+                                System.out.println("Pomyślnie przypisano księgowego.");
+                            } catch (CompanyNotFoundException e) {
+                                System.out.println("Firma o podanym numerze NIP nie została odnaleziona w bazie danych!");
+                            } catch (AccountantNotFoundException | AccountantAlreadyAssignedException e) {
+                                System.out.println("Księgowy o podanym loginie nie istnieje, lub jest już przypisany!");
+                            }
                             break;
+                        }
 
                         case 0:
-                            state = State.EXIT;
+                            state = State.LOGGED_IN_AS_ADMIN;
                             scanner.nextLine();
                             break;
 
                         default:
                             System.out.println("Zła odpowiedź");
-                            state = State.INIT;
+                            state = State.MANAGING_COMPANIES;
                             scanner.nextLine();
                             break;
                     }
@@ -227,14 +378,17 @@ public class Main {
                     System.out.println("Podaj numer NIP firmy:");
                     String nipNumber = scanner.nextLine();
 
-                    CompanyController.createCompany(name, yearFound, nipNumber);
+                    try {
+                        CompanyController.createCompany(name, yearFound, nipNumber);
+                        System.out.println("Pomyślnie dodano firmę do bazy danych");
+                    } catch (NipAlreadyTakenException e) {
+                        System.out.println("Firma o podanym numerze NIP już istnieje w bazie danych!");
+                    }
 
-                    state = State.LOGGED_IN;
+                    state = State.MANAGING_COMPANIES;
                     break;
                 }
-
             }
         }
-        // write your code here
     }
 }

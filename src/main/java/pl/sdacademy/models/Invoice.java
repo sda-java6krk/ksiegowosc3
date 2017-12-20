@@ -26,7 +26,8 @@ public class Invoice {
         this.amount = amount;
         this.VAT = VAT;
         this.isPaid = isPaid;
-        this.invoiceNumber = InvoiceRegistry.generateInvoiceNumber();
+        //TODO
+        this.invoiceNumber = InvoiceRegistry.generateInvoiceNumber(company.getNipNumber(),123);
 
     }
 
