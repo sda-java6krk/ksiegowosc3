@@ -36,7 +36,7 @@ public class CompanyController {
         CompanyRegistry.getInstance().changeCompanyNip(companyNip, newNip);
     }
 
-    public static void assignAccountantToCompany(String companyNip, String accountantLogin) throws CompanyNotFoundException, AccountantAlreadyAssignedException, AccountantNotFoundException {
+    public static void assignAccountantToCompany(String companyNip, String accountantLogin) throws CompanyNotFoundException, AccountantAlreadyAssignedException, AccountantNotFoundException, IOException {
         CompanyRegistry.getInstance().assignAccountantToCompany(companyNip,accountantLogin);
     }
 }

@@ -274,9 +274,9 @@ public class Main {
                     System.out.println(" 1 - wypisać wszystkie firmy");
                     System.out.println(" 2 - dodać nową firmę do bazy danych");
                     System.out.println(" 3 - usunąć firmę z bazy danych");
-                    System.out.println(" 4 - zmienić nazwę firmy / not implemented");
-                    System.out.println(" 5 - zmienić numer NIP firmy / not implemented");
-                    System.out.println(" 6 - przypisać księgowego do firmy / not implemented");
+                    System.out.println(" 4 - zmienić nazwę firmy");
+                    System.out.println(" 5 - zmienić numer NIP firmy");
+                    System.out.println(" 6 - przypisać księgowego do firmy");
 
                     System.out.println(" 0 - wyjść do menu głównego");
 
@@ -298,7 +298,7 @@ public class Main {
                             String companyToBeDeleted = scanner.nextLine();
                             try {
                                 CompanyController.removeCompanyFromDatabase(companyToBeDeleted);
-                                System.out.println("");
+                                System.out.println("Firma pomyślnie usunięta z bazy danych!");
                             } catch (CompanyNotFoundException e) {
                                 System.out.println("Firma o podanym numerze NIP nie została odnaleziona w bazie danych!");
                             }
@@ -385,7 +385,7 @@ public class Main {
                         System.out.println("Firma o podanym numerze NIP już istnieje w bazie danych!");
                     }
 
-                    state = State.LOGGED_IN_AS_ADMIN;
+                    state = State.MANAGING_COMPANIES;
                     break;
                 }
             }

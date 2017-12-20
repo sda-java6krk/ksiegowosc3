@@ -39,6 +39,11 @@ public class CompanyRegistry {
         return this.companies;
     }
 
+    // adding company loaded from file to the database
+    public void addLoadedData(Company company) {
+        this.companies.add(company);
+    }
+
     // adding a specific company to the database. Such method assign no accountants to the company
     public void add(Company company) throws IOException, NipAlreadyTakenException {
         if (getCompanyByNipNumber(company.getNipNumber()) == null) {
@@ -61,9 +66,9 @@ public class CompanyRegistry {
 
             String line = input.nextLine();
             String[] companyDetails = line.split(";");
-            add(new Company(companyDetails[0], Integer.parseInt(companyDetails[1]), companyDetails[2]));
-            for (int i = 2; i < companyDetails.length - 1; i++) {
-                this.companies.get(this.companies.size() - 1).getCompanyAccountants().add(accountantRegistry.findAccountantByLogin(companyDetails[i]));
+            addLoadedData(new Company(companyDetails[0], Integer.parseInt(companyDetails[1]), companyDetails[2]));
+            for (int i = 3; i < companyDetails.length; i++) {
+                this.companies.get(this.companies.size() - 1).getCompanyAccountants().add(AccountantRegistry.findAccountantByLogin(companyDetails[i]));
             }
         }
         input.close();
@@ -74,13 +79,13 @@ public class CompanyRegistry {
         try (FileWriter fw = new FileWriter(COMPANY_LIST_FILEPATH, true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
-            out.print(company.getName() + ";" + company.getYearFound() + ";" + company.getNipNumber() + ";");
+            out.print(company.getName() + ";" + company.getYearFound() + ";" + company.getNipNumber());
 
             for (Accountant accountant : company.getCompanyAccountants()
                     ) {
-                out.print(accountant.getLogin() + ";");
+                out.print(";" + accountant.getLogin());
             }
-            System.out.println();
+            out.println();
         }
     }
 
@@ -102,12 +107,12 @@ public class CompanyRegistry {
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
             for (Company company : companies) {
-                out.print(company.getName() + ";" + company.getYearFound() + ";" + company.getNipNumber() + ";");
+                out.print(company.getName() + ";" + company.getYearFound() + ";" + company.getNipNumber());
                 for (Accountant accountant : company.getCompanyAccountants()
                         ) {
-                    out.print(accountant.getLogin() + ";");
+                    out.print(";" + accountant.getLogin());
                 }
-                System.out.println();
+                out.println();
             }
         }
     }
@@ -130,20 +135,23 @@ public class CompanyRegistry {
 
     public void changeCompanyNip(String nipNumber, String newNip) throws IOException, CompanyNotFoundException, NipAlreadyTakenException {
         Company editedCompany = getCompanyByNipNumber(nipNumber);
+        if (editedCompany == null) {
+            throw new CompanyNotFoundException();
+        }
 
         if (getCompanyByNipNumber(newNip) != null) {
             throw new NipAlreadyTakenException();
         }
-
-        editedCompany.changeName(newNip);
+        editedCompany.changeNip(newNip);
         rewriteFile();
     }
 
-    public void assignAccountantToCompany(String companyNip, String accountantLogin) throws CompanyNotFoundException, AccountantAlreadyAssignedException, AccountantNotFoundException {
+    public void assignAccountantToCompany(String companyNip, String accountantLogin) throws CompanyNotFoundException, AccountantAlreadyAssignedException, AccountantNotFoundException, IOException {
         Company company = getCompanyByNipNumber(companyNip);
         if (company == null) {
             throw new CompanyNotFoundException();
         }
         company.assignAccountant(accountantLogin);
+        rewriteFile();
     }
 }
