@@ -41,7 +41,7 @@ public class InvoiceRegistry {
     }
 
 
-    public String generateInvoiceNumber(String nipNumber, int counter) {
+    public static String generateInvoiceNumber(String nipNumber, int counter) {
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
 
