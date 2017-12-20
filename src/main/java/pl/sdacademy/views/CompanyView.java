@@ -11,7 +11,7 @@ import java.util.List;
 public class CompanyView {
     public static void printCompanies(List<Company> companies) {
         for (Company company : companies) {
-            System.out.println(company.getName() + " (rok założenia: " + company.getYearFound() + "numer NIP: " + company.getNipNumber() + ")");
+            System.out.println(company.getName() + " (rok założenia: " + company.getYearFound() + ", numer NIP: " + company.getNipNumber() + ")");
             System.out.println("Przypisani księgowi: ");
 
             if (company.getCompanyAccountants().size() > 0) {
