@@ -1,5 +1,6 @@
 package pl.sdacademy.models;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class InvoiceRegistry {
@@ -40,8 +41,13 @@ public class InvoiceRegistry {
     }
 
 
-    public static String generateInvoiceNumber() {
-        //TODO
-        return null;
+    public String generateInvoiceNumber(String nipNumber) {
+        int year = LocalDate.now().getYear();
+        int month = LocalDate.now().getMonthValue();
+        int number = salesInvoicesList.size() + purchaseInvoicesList.size()+1;
+
+        String temp="FV/"+nipNumber +"/" + String.valueOf(year)+ "/" + String.valueOf(month)+"/" +String.valueOf(number) ;
+
+        return temp;
     }
 }
