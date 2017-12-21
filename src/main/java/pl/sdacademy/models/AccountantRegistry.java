@@ -1,15 +1,15 @@
 package pl.sdacademy.models;
 
+import pl.sdacademy.exceptions.AccountantAlreadyExistsException;
 import pl.sdacademy.exceptions.AccountantNotFoundException;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public class AccountantRegistry implements CredentialsValidation {
+public class AccountantRegistry implements CredentialsValidation, Serializable {
     private static AccountantRegistry instance = null;
+    private static final String ACCOUNTANT_LIST_FILEPATH = "src/resources/accountantList.txt";
 
     public static AccountantRegistry getInstance() {
         if (instance == null) {
@@ -18,12 +18,13 @@ public class AccountantRegistry implements CredentialsValidation {
         return instance;
     }
 
-    private ArrayList<Accountant> accountants;
+    private List<Accountant> accountants;
 
     public AccountantRegistry() {
         this.accountants = new ArrayList<>();
-//
+
 //        this.accountants.add(new Accountant("janek", "asd"));
+//        this.accountants.add(new Accountant("adam", "123"));
     }
 
     public Accountant findAccountant(String login, String password) throws AccountantNotFoundException {
@@ -44,14 +45,15 @@ public class AccountantRegistry implements CredentialsValidation {
         return false;
     }
 
-    public void addAccountant(String login, String password) throws IOException {
+    public void addAccountant(String login, String password) throws IOException, AccountantAlreadyExistsException {
         if (checkIfAccountantLoginAlreadyExist(login)) {
-            throw new IllegalArgumentException("Księgowy z tym loginem już istnieje!");
+            throw new AccountantAlreadyExistsException();
         }
         this.accountants.add(new Accountant(login, password));
+        writeDataToFile();
     }
 
-    public void removeAccountant(String login) throws IOException {
+    public void removeAccountant(String login) throws IOException, AccountantNotFoundException {
         Accountant accountantToBeRemoved = null;
         for (Accountant accountant : accountants) {
             if (accountant.getLogin().equals(login)) {
@@ -60,46 +62,39 @@ public class AccountantRegistry implements CredentialsValidation {
         }
         if (accountantToBeRemoved != null) {
             this.accountants.remove(accountantToBeRemoved);
-            System.out.println("Usunięto Księgowego");
-            try (FileWriter fw = new FileWriter("src/resources/accountantListTemp.txt", true);
-                 BufferedWriter bw = new BufferedWriter(fw);
-                 PrintWriter out = new PrintWriter(bw)) {
-                for (Accountant accountant : accountants) {
-                    out.println(accountant.getLogin() + ";" + accountant.getPassword());
-                }
-            }
-
-            File oldFile = new File("src/resources/accountantList.txt");
-            boolean oldFileDeletionStatus = Files.deleteIfExists(oldFile.toPath());
-            if (!oldFileDeletionStatus) System.out.println("Błąd przy usuwaniu księgowego!");
-
-            File newFile = new File("src/resources/accountantListTemp.txt");
-            boolean newFileCreationStatus = newFile.renameTo(new File("src/resources/accountantList.txt"));
-            if (!newFileCreationStatus) System.out.println("Błąd przy usuwaniu księgowego!");
-
+            writeDataToFile();
+            CompanyRegistry.getInstance().unassignAccountantAfterDeletion(accountantToBeRemoved);
+        } else {
+            throw new AccountantNotFoundException();
         }
     }
 
-    public void writeAccountantCredentialsToFile(String login, String password) throws IOException {
-        try (FileWriter fw = new FileWriter("src/resources/AccountantList.txt", true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
-            out.println(login + ";" + password);
+
+    public void writeDataToFile() throws IOException {
+        try (FileOutputStream fs = new FileOutputStream(ACCOUNTANT_LIST_FILEPATH, false);
+             ObjectOutputStream os = new ObjectOutputStream(fs)) {
+            os.writeObject(this.accountants);
         }
-        System.out.println("Pomyślnie dodano księgowego!");
     }
 
     public void loadExistingAccountantsFromFile() throws IOException {
-        File file = new File("src/resources/accountantList.txt");
-        Scanner input = new Scanner(file);
-        while (input.hasNextLine()) {
-            String line = input.nextLine();
-            String[] credentials = line.split(";");
-            addAccountant(credentials[0], credentials[1]);
+        List<Accountant> accountants = null;
+
+        try (
+                FileInputStream fis = new FileInputStream(ACCOUNTANT_LIST_FILEPATH);
+                ObjectInputStream ois = new ObjectInputStream(fis)
+        ) {
+            accountants = (List<Accountant>) ois.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (accountants != null) {
+            this.accountants = accountants;
         }
     }
 
-    public ArrayList<Accountant> getAccountants() {
+    public List<Accountant> getAccountants() {
         return accountants;
     }
 

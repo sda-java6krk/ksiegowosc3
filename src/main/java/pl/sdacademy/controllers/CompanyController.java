@@ -8,6 +8,7 @@ import pl.sdacademy.models.Accountant;
 import pl.sdacademy.models.Company;
 import pl.sdacademy.models.CompanyRegistry;
 import pl.sdacademy.views.CompanyView;
+import pl.sdacademy.views.AccountantView;
 
 import java.io.IOException;
 
@@ -24,6 +25,11 @@ public class CompanyController {
         CompanyView.printCompanies(CompanyRegistry.getInstance().getCompanies());
     }
 
+
+    public static void listCompaniesAssignedToAccountant(Accountant accountant) {
+        AccountantView.printCompaniesAssignedToAccountant(accountant);
+    }
+
     public static void removeCompanyFromDatabase(String nipNumber) throws IOException, CompanyNotFoundException {
         CompanyRegistry.getInstance().deleteCompany(nipNumber);
     }
@@ -37,6 +43,6 @@ public class CompanyController {
     }
 
     public static void assignAccountantToCompany(String companyNip, String accountantLogin) throws CompanyNotFoundException, AccountantAlreadyAssignedException, AccountantNotFoundException, IOException {
-        CompanyRegistry.getInstance().assignAccountantToCompany(companyNip,accountantLogin);
+        CompanyRegistry.getInstance().assignAccountantToCompany(companyNip, accountantLogin);
     }
 }
