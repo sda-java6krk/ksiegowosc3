@@ -1,7 +1,7 @@
 package pl.sdacademy.controllers;
 
 import pl.sdacademy.exceptions.CompanyNotFoundException;
-import pl.sdacademy.exceptions.MonthNotFoundException;
+
 import pl.sdacademy.models.*;
 import pl.sdacademy.views.InvoiceView;
 

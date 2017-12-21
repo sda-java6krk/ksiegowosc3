@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 
+
 public class InvoiceRegistry {
 
     private static InvoiceRegistry instance = null;
@@ -46,12 +47,11 @@ public class InvoiceRegistry {
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
 
-        String temp="FV/"+nipNumber +"/" + String.valueOf(year)+ "/" + String.valueOf(month)+"/" +String.valueOf(counter);
-
-        return temp;
+        return "FV/"+nipNumber +"/" + String.valueOf(year)+ "/" + String.valueOf(month)+"/" +String.valueOf(counter);
     }
 
-    public static Month getDate(){
+    public static Month getDate(){ //temporary
         return LocalDate.now().getMonth();
     }
+
 }

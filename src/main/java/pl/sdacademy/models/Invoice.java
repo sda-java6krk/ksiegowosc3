@@ -83,7 +83,7 @@ public class Invoice {
         return company.getName();
     }
 
-    public Month getMonth() {
+    public Month getMonth() { //temporary
         return InvoiceRegistry.getDate();
     }
 
