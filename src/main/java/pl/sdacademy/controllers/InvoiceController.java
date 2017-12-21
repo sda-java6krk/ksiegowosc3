@@ -12,12 +12,12 @@ import java.math.BigDecimal;
  */
 public class InvoiceController {
 
-    public static void createPurchaseInvoice(Contractor contractor, Company company, String invoiceNumber, BigDecimal amount, int VAT, boolean isPaid){
-        InvoiceRegistry.getInstance().addSalesInvoice(new Invoice(contractor, company, invoiceNumber, amount, VAT, isPaid));
+    public static void createPurchaseInvoice(String contractorNip, Company company, String invoiceNumber, BigDecimal amount, int VAT, boolean isPaid){
+        InvoiceRegistry.getInstance().addSalesInvoice(new Invoice(contractorNip, company, invoiceNumber, amount, VAT, isPaid));
     }
 
-    public static void createSalesInvoice(Contractor contractor, Company company, BigDecimal amount, int VAT, boolean isPaid){
-        InvoiceRegistry.getInstance().addPurchaseInvoice(new Invoice(contractor, company, amount, VAT, isPaid));
+    public static void createSalesInvoice(String contractorNip, Company company, BigDecimal amount, int VAT, boolean isPaid){
+        InvoiceRegistry.getInstance().addPurchaseInvoice(new Invoice(contractorNip, company, amount, VAT, isPaid));
     }
 
 }

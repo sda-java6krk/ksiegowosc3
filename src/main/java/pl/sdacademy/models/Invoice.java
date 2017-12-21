@@ -19,9 +19,10 @@ public class Invoice {
     private Contractor contractor;
     private Company company;
 
-    public Invoice(Contractor contractor, Company company, BigDecimal amount, int VAT, boolean isPaid) {
+    public Invoice(String contractorNip, Company company, BigDecimal amount, int VAT, boolean isPaid) {
+
         this.invoiceType = InvoiceType.SALES_INVOICE;
-        this.contractor= contractor;
+        this.contractor= ContractorRegistry.getInstance().getContractorByNip(contractorNip);
         this.company = company;
         this.amount = amount;
         this.VAT = VAT;
@@ -31,9 +32,9 @@ public class Invoice {
 
     }
 
-    public Invoice(Contractor contractor, Company company, String invoiceNumber, BigDecimal amount, int VAT, boolean isPaid) {
+    public Invoice(String contractorNip, Company company, String invoiceNumber, BigDecimal amount, int VAT, boolean isPaid) {
         this.invoiceType = InvoiceType.PURCHASE_INVOICE;
-        this.contractor = contractor;
+        this.contractor = ContractorRegistry.getInstance().getContractorByNip(contractorNip);
         this.company = company;
         this.invoiceNumber = invoiceNumber;
         this.amount = amount;
