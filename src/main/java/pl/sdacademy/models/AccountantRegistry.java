@@ -44,11 +44,12 @@ public class AccountantRegistry implements CredentialsValidation {
         return false;
     }
 
-    public void addAccountant(String login, String password) throws IOException {
+    public AccountantRegistry addAccountant(String login, String password) throws IOException {
         if (checkIfAccountantLoginAlreadyExist(login)) {
             throw new IllegalArgumentException("Księgowy z tym loginem już istnieje!");
         }
         this.accountants.add(new Accountant(login, password));
+        return null;
     }
 
     public void removeAccountant(String login) throws IOException {

@@ -27,4 +27,14 @@ public class CompanyView {
             }
         }
     }
+
+    //Lepsze w tej formie do testowania:
+  //  public List<String> listCompanies(List<Company> companies){
+  //      for (Company company : companies) {
+  //          System.out.println(company.getName() + " (rok założenia: " + company.getYearFound() + ", numer NIP: " + company.getNipNumber() + ")");
+  //          String companyDescription = company.getName() + " rok założenia...."
+  //      }
+  //  }
+
+
 }

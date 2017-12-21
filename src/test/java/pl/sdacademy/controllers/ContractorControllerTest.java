@@ -1,7 +1,6 @@
-package models;
+package pl.sdacademy.controllers;
 
 import org.junit.*;
-import pl.sdacademy.controllers.ContractorController;
 
 public class ContractorControllerTest {
 
@@ -33,7 +32,7 @@ public class ContractorControllerTest {
         ContractorController.addContractor(name, nip);
     }
 
-    @Test (expected = Exception.class)
+    @Test(expected = Exception.class)
     public void shouldThrowExceptionWhenNipContainsCharactersOtherThanDigits() {
         // given
         String name;

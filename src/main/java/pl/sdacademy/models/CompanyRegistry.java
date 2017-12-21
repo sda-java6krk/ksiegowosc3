@@ -17,6 +17,7 @@ public class CompanyRegistry {
     private static CompanyRegistry instance = null;
     private static final String COMPANY_LIST_FILEPATH = "src/resources/companyList.txt";
 
+
     public static CompanyRegistry getInstance() {
         if (instance == null) {
             instance = new CompanyRegistry();
@@ -119,8 +120,7 @@ public class CompanyRegistry {
 
     // checking if company with given nip numbers already added to the database. Returns Company or null.
     public Company getCompanyByNipNumber(String nipNumber) {
-        for (Company company : companies
-                ) {
+        for (Company company : companies) {
             if (company.getNipNumber().equals(nipNumber)) {
                 return company;
             }
