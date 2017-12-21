@@ -3,10 +3,12 @@ package pl.sdacademy;
 import pl.sdacademy.controllers.AccountantController;
 import pl.sdacademy.controllers.AdminController;
 import pl.sdacademy.controllers.CompanyController;
+import pl.sdacademy.controllers.InvoiceController;
 import pl.sdacademy.exceptions.*;
 import pl.sdacademy.models.*;
 
 import java.io.IOException;
+import java.time.Month;
 import java.util.Scanner;
 
 public class Main {
@@ -277,6 +279,7 @@ public class Main {
                     System.out.println(" 4 - zmienić nazwę firmy");
                     System.out.println(" 5 - zmienić numer NIP firmy");
                     System.out.println(" 6 - przypisać księgowego do firmy");
+                    System.out.println(" 7 - wypisać faktury dla danej firmy z określonego miesiąca");
 
                     System.out.println(" 0 - wyjść do menu głównego");
 
@@ -350,6 +353,21 @@ public class Main {
                             } catch (AccountantNotFoundException | AccountantAlreadyAssignedException e) {
                                 System.out.println("Księgowy o podanym loginie nie istnieje, lub jest już przypisany!");
                             }
+                            break;
+                        }
+
+                        case 7: {
+                            scanner.nextLine();
+                            System.out.println("Podaj nazwę firmy: ");
+                            String companyName = scanner.nextLine();
+                            System.out.println("Podaj numer miesiąca (1-12): ");
+                            int month = scanner.nextInt();
+                            scanner.nextLine();
+                            Month temp = Month.of(month);
+                            System.out.println("Faktury sprzedaży");
+                            InvoiceController.listSalesInvoice(companyName, temp);
+                            System.out.println("Faktury kupna");
+                            InvoiceController.listPurchaseInvoice(companyName, temp);
                             break;
                         }
 

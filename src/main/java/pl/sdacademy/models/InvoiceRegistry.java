@@ -1,6 +1,7 @@
 package pl.sdacademy.models;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 
 public class InvoiceRegistry {
@@ -48,5 +49,9 @@ public class InvoiceRegistry {
         String temp="FV/"+nipNumber +"/" + String.valueOf(year)+ "/" + String.valueOf(month)+"/" +String.valueOf(counter);
 
         return temp;
+    }
+
+    public static Month getDate(){
+        return LocalDate.now().getMonth();
     }
 }

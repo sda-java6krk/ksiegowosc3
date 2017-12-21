@@ -1,11 +1,10 @@
 package pl.sdacademy.controllers;
 
-import pl.sdacademy.models.Company;
-import pl.sdacademy.models.Contractor;
-import pl.sdacademy.models.Invoice;
-import pl.sdacademy.models.InvoiceRegistry;
+import pl.sdacademy.models.*;
+import pl.sdacademy.views.InvoiceView;
 
 import java.math.BigDecimal;
+import java.time.Month;
 
 /**
  * Created by marcin on 13.12.2017.
@@ -19,5 +18,14 @@ public class InvoiceController {
     public static void createSalesInvoice(Contractor contractor, Company company, BigDecimal amount, int VAT, boolean isPaid){
         InvoiceRegistry.getInstance().addPurchaseInvoice(new Invoice(contractor, company, amount, VAT, isPaid));
     }
+
+    public static void listSalesInvoice(String companyName, Month month){
+        InvoiceView.printInvoice(InvoiceRegistry.getInstance().getSalesInvoicesList(), companyName, month);
+    }
+    public static void listPurchaseInvoice(String companyName, Month month){
+        InvoiceView.printInvoice(InvoiceRegistry.getInstance().getPurchaseInvoicesList(), companyName, month);
+    }
+
+
 
 }
