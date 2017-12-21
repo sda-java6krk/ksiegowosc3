@@ -8,6 +8,7 @@ import pl.sdacademy.exceptions.*;
 import pl.sdacademy.models.*;
 
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.Month;
 import java.util.Scanner;
 
@@ -363,11 +364,18 @@ public class Main {
                             System.out.println("Podaj numer miesiąca (1-12): ");
                             int month = scanner.nextInt();
                             scanner.nextLine();
-                            Month temp = Month.of(month);
-                            System.out.println("Faktury sprzedaży");
-                            InvoiceController.listSalesInvoice(companyName, temp);
-                            System.out.println("Faktury kupna");
-                            InvoiceController.listPurchaseInvoice(companyName, temp);
+
+                            try {
+                                Month temp = Month.of(month);
+                                System.out.println("Faktury sprzedaży");
+                                InvoiceController.listSalesInvoice(companyName, temp);
+                                System.out.println("Faktury kupna");
+                                InvoiceController.listPurchaseInvoice(companyName, temp);
+                            } catch (CompanyNotFoundException e) {
+                                System.out.println("Firma o podanej nazwie nie istnieje!");
+                            } catch (DateTimeException e) {
+                                System.out.println("Taki miesiąc nie istnieje!");
+                            }
                             break;
                         }
 

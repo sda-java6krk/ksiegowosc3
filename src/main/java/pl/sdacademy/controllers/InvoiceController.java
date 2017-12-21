@@ -1,9 +1,12 @@
 package pl.sdacademy.controllers;
 
+import pl.sdacademy.exceptions.CompanyNotFoundException;
+import pl.sdacademy.exceptions.MonthNotFoundException;
 import pl.sdacademy.models.*;
 import pl.sdacademy.views.InvoiceView;
 
 import java.math.BigDecimal;
+import java.time.DateTimeException;
 import java.time.Month;
 
 /**
@@ -19,10 +22,10 @@ public class InvoiceController {
         InvoiceRegistry.getInstance().addPurchaseInvoice(new Invoice(contractor, company, amount, VAT, isPaid));
     }
 
-    public static void listSalesInvoice(String companyName, Month month){
+    public static void listSalesInvoice(String companyName, Month month) throws CompanyNotFoundException, DateTimeException {
         InvoiceView.printInvoice(InvoiceRegistry.getInstance().getSalesInvoicesList(), companyName, month);
     }
-    public static void listPurchaseInvoice(String companyName, Month month){
+    public static void listPurchaseInvoice(String companyName, Month month) throws CompanyNotFoundException, DateTimeException{
         InvoiceView.printInvoice(InvoiceRegistry.getInstance().getPurchaseInvoicesList(), companyName, month);
     }
 
