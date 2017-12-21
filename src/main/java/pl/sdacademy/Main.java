@@ -24,6 +24,8 @@ public class Main {
         MANAGING_ADMINS,
         MANAGING_ACCOUNTANTS,
         CREATING_COMPANY,
+        VIEWING_PURCHASE_INVOICE,
+        VIEWING_SELL_INVOICE,
         EXIT,
     }
 
@@ -280,7 +282,6 @@ public class Main {
                     System.out.println(" 4 - zmienić nazwę firmy");
                     System.out.println(" 5 - zmienić numer NIP firmy");
                     System.out.println(" 6 - przypisać księgowego do firmy");
-                    System.out.println(" 7 - wypisać faktury dla danej firmy z określonego miesiąca");
 
                     System.out.println(" 0 - wyjść do menu głównego");
 
@@ -357,28 +358,6 @@ public class Main {
                             break;
                         }
 
-                        case 7: {
-                            scanner.nextLine();
-                            System.out.println("Podaj nazwę firmy: ");
-                            String companyName = scanner.nextLine();
-                            System.out.println("Podaj numer miesiąca (1-12): ");
-                            int month = scanner.nextInt();
-                            scanner.nextLine();
-
-                            try {
-                                Month temp = Month.of(month);
-                                System.out.println("Faktury sprzedaży");
-                                InvoiceController.listSalesInvoice(companyName, temp);
-                                System.out.println("Faktury kupna");
-                                InvoiceController.listPurchaseInvoice(companyName, temp);
-                            } catch (CompanyNotFoundException e) {
-                                System.out.println("Firma o podanej nazwie nie istnieje!");
-                            } catch (DateTimeException e) {
-                                System.out.println("Taki miesiąc nie istnieje!");
-                            }
-                            break;
-                        }
-
                         case 0:
                             state = State.LOGGED_IN_AS_ADMIN;
                             scanner.nextLine();
@@ -412,6 +391,46 @@ public class Main {
                     }
 
                     state = State.MANAGING_COMPANIES;
+                    break;
+                }
+
+                case VIEWING_SELL_INVOICE: {
+
+                    System.out.println("Podaj nazwę firmy: ");
+                    String companyName = scanner.nextLine();
+                    System.out.println("Podaj numer miesiąca (1-12): ");
+                    int month = scanner.nextInt();
+                    scanner.nextLine();
+
+                    try {
+                        Month temp = Month.of(month);
+                        System.out.println("Faktury sprzedaży");
+                        InvoiceController.listSalesInvoice(companyName, temp);
+                    } catch (CompanyNotFoundException e) {
+                        System.out.println("Firma o podanej nazwie nie istnieje!");
+                    } catch (DateTimeException e) {
+                        System.out.println("Taki miesiąc nie istnieje!");
+                    }
+                    break;
+                }
+
+                case VIEWING_PURCHASE_INVOICE: {
+
+                    System.out.println("Podaj nazwę firmy: ");
+                    String companyName = scanner.nextLine();
+                    System.out.println("Podaj numer miesiąca (1-12): ");
+                    int month = scanner.nextInt();
+                    scanner.nextLine();
+
+                    try {
+                        Month temp = Month.of(month);
+                        System.out.println("Faktury kupna");
+                        InvoiceController.listPurchaseInvoice(companyName, temp);
+                    } catch (CompanyNotFoundException e) {
+                        System.out.println("Firma o podanej nazwie nie istnieje!");
+                    } catch (DateTimeException e) {
+                        System.out.println("Taki miesiąc nie istnieje!");
+                    }
                     break;
                 }
             }
