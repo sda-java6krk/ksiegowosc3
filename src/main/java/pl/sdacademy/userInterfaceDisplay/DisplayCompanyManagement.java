@@ -42,7 +42,5 @@ public class DisplayCompanyManagement {
         System.out.println(" 3 - wyświetlić faktury sprzedażowe z danego miesiąca / not implemented");
         System.out.println(" 4 - wyświetlić faktury zakupowe z danego miesiąca / not implemented");
         System.out.println(" 0 - wyjść do menu głównego");
-
-
     }
 }

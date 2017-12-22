@@ -1,8 +1,6 @@
 package pl.sdacademy.userInterfaceDisplay;
 
-import pl.sdacademy.controllers.CompanyController;
 import pl.sdacademy.enums.State;
-import pl.sdacademy.exceptions.AdminNotFoundException;
 import pl.sdacademy.models.*;
 
 import java.io.IOException;
