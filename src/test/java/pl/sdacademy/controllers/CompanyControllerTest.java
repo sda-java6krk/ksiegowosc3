@@ -2,10 +2,7 @@ package pl.sdacademy.controllers;
 
 import org.junit.Assert;
 import org.junit.*;
-import pl.sdacademy.exceptions.AccountantAlreadyAssignedException;
-import pl.sdacademy.exceptions.AccountantNotFoundException;
-import pl.sdacademy.exceptions.CompanyNotFoundException;
-import pl.sdacademy.exceptions.NipAlreadyTakenException;
+import pl.sdacademy.exceptions.*;
 import pl.sdacademy.models.AccountantRegistry;
 import pl.sdacademy.models.Company;
 import pl.sdacademy.models.CompanyRegistry;
@@ -81,14 +78,14 @@ public class CompanyControllerTest {
     }
 
     @Test
-    public void shouldThrowAccountantAlreadyAssignedExceptionWhenAssignAccountantToCompany() {
+    public void shouldThrowAccountantAlreadyAssignedExceptionWhenAssignAccountantToCompany() throws AccountantAlreadyExistsException {
         //given
         String nipNumber = "1235Test2";
         String accountantLogin = "FranekTest2";
 
         //when
         try {
-            AccountantRegistry accountantRegistry = AccountantRegistry.getInstance().addAccountant(accountantLogin, "123");
+            AccountantRegistry.getInstance().addAccountant(accountantLogin, "123");
             CompanyController.createCompany("SDA", 2017, nipNumber);
         } catch (IOException e) {
             e.printStackTrace();
