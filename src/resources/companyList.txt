@@ -1,6 +1,6 @@
-Ziutex sp. z o.o.;1990;123123
-Krakbud s.j.;1995;345345
-Adamex;1999;2342342234
-Romex;2014;4365467
-Drutex;2001;64764634
-Stalbud;1999;123;adam
+Drutex;2000;123456789
+Drutex;2000;321
+SDA;2017;1235Test
+Srutex;2000;123
+SDA;2017;1235Test2;FranekTest2
+Drutex;2000;234325353
