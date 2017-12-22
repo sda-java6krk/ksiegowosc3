@@ -3,13 +3,14 @@ package pl.sdacademy.models;
 import pl.sdacademy.exceptions.AccountantAlreadyAssignedException;
 import pl.sdacademy.exceptions.AccountantNotFoundException;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by marcin on 13.12.2017.
  */
-public class Company {
+public class Company implements Serializable{
     private String name;
     private int yearFound;
     private String nipNumber;
@@ -47,6 +48,11 @@ public class Company {
             }
         }
         this.companyAccountants.add(accountantToBeAssigned);
+    }
+
+    public void unassignAccountant(Accountant accountant) {
+
+        this.companyAccountants.remove(accountant);
     }
 
     public void changeName(String newName) {

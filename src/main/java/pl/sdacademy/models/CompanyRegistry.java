@@ -152,6 +152,26 @@ public class CompanyRegistry {
             throw new CompanyNotFoundException();
         }
         company.assignAccountant(accountantLogin);
+        AccountantRegistry.findAccountantByLogin(accountantLogin).assignToCompany(company);
+        AccountantRegistry.getInstance().writeDataToFile();
         rewriteFile();
     }
+
+    public void unassignAccountantAfterDeletion(Accountant accountantToBeRemoved) throws IOException {
+        for (Company company : this.companies
+                ) {
+            if (company.getCompanyAccountants().size() == 0) {
+                continue;
+            }
+            for (Accountant accountant : company.getCompanyAccountants()
+                    ) {
+                if (accountant.equals(accountantToBeRemoved)) {
+                    company.unassignAccountant(accountant);
+                    break;
+                }
+            }
+        }
+        rewriteFile();
+    }
+
 }

@@ -3,10 +3,14 @@ package pl.sdacademy;
 import pl.sdacademy.controllers.AccountantController;
 import pl.sdacademy.controllers.AdminController;
 import pl.sdacademy.controllers.CompanyController;
+import pl.sdacademy.controllers.InvoiceController;
 import pl.sdacademy.exceptions.*;
 import pl.sdacademy.models.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.DateTimeException;
+import java.time.Month;
 import java.util.Scanner;
 
 public class Main {
@@ -22,6 +26,12 @@ public class Main {
         MANAGING_ACCOUNTANTS,
         CREATING_COMPANY,
         EXIT,
+        LOGGING_TO_COMPANY_MANAGEMENT,
+        MANAGING_COMPANY_INVOICING,
+        ADDING_SELL_INVOICE,
+        ADDING_PURCHASE_INVOICE,
+        VIEWING_PURCHASE_INVOICE,
+        VIEWING_SELL_INVOICE
     }
 
     public static void main(String[] args) throws IOException {
@@ -38,7 +48,8 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
         Admin currentAdmin;
-        Accountant currentAccountant;
+        Accountant currentAccountant = null;
+        Company currentCompany = null;
 
 
         while (state != State.EXIT) {
@@ -116,12 +127,18 @@ public class Main {
                 case LOGGED_IN_AS_ACCOUNTANT: {
                     System.out.println("Co chcesz zrobić?");
                     System.out.println(" 1 - wypisać wszystkie firmy");
+                    System.out.println(" 2 - przejść do zarządzania firmami");
                     System.out.println(" 0 - wyjść z programu");
 
                     switch (scanner.nextInt()) {
                         case 1:
                             CompanyController.listCompanies();
                             state = State.LOGGED_IN_AS_ACCOUNTANT;
+                            scanner.nextLine();
+                            break;
+
+                        case 2:
+                            state = State.LOGGING_TO_COMPANY_MANAGEMENT;
                             scanner.nextLine();
                             break;
 
@@ -138,6 +155,82 @@ public class Main {
                     }
                     break;
 
+                }
+
+                case LOGGING_TO_COMPANY_MANAGEMENT: {
+                    System.out.println("Lista firm przypisanych do twojego konta:");
+                    CompanyController.listCompaniesAssignedToAccountant(currentAccountant);
+
+                    System.out.println("\nCo chcesz zrobić?");
+                    System.out.println(" Numer NIP firmy - Zarządzanie firmą");
+
+                    System.out.println(" 0 - Wyjście do głównego menu");
+                    String tempImput = scanner.nextLine();
+                    if (tempImput.equals("0")) {
+                        state = State.LOGGED_IN_AS_ACCOUNTANT;
+                    } else {
+                        //TODO dodać sprawdzenie, czy admin ma prawo dostępu (jest przypisany) do danych wpisanej firmy
+                        if ((currentCompany = CompanyRegistry.getInstance().getCompanyByNipNumber(tempImput)) == null) {
+                            System.out.println("Nie ma takiej firmy w bazie danych!");
+                            state = State.LOGGED_IN_AS_ACCOUNTANT;
+                        } else {
+                            state = State.MANAGING_COMPANY_INVOICING;
+                        }
+                    }
+                    break;
+                }
+
+                case MANAGING_COMPANY_INVOICING: {
+                    System.out.println("Co chcesz zrobić?");
+                    System.out.println(" 1 - dodać fakturę sprzedażową / not implemented");
+                    System.out.println(" 2 - dodać fakturę zakupową / not implemented" );
+                    System.out.println(" 3 - wyświetlić faktury sprzedażowe z danego miesiąca / not implemented");
+                    System.out.println(" 4 - wyświetlić faktury zakupowe z danego miesiąca / not implemented");
+
+                    System.out.println(" 0 - wyjść do menu głównego");
+
+                    switch (scanner.nextInt()) {
+                        case 1:
+                            state = State.ADDING_SELL_INVOICE;
+                            scanner.nextLine();
+                            break;
+
+                        case 2:
+                            state = State.ADDING_PURCHASE_INVOICE;
+                            scanner.nextLine();
+                            break;
+
+                        case 3:
+//                            state = State.VIEWING_SELL_INVOICE;
+                            state = State.LOGGING_TO_COMPANY_MANAGEMENT;
+                            scanner.nextLine();
+                            break;
+
+                        case 4:
+//                            state = State.VIEWING_PURCHASE_INVOICE;
+                            state = State.LOGGING_TO_COMPANY_MANAGEMENT;
+                            scanner.nextLine();
+                            break;
+
+                        case 0:
+                            state = State.LOGGING_TO_COMPANY_MANAGEMENT;
+                            scanner.nextLine();
+                            break;
+
+                        default:
+                            System.out.println("Zła odpowiedź");
+                            state = State.MANAGING_COMPANY_INVOICING;
+                            scanner.nextLine();
+                            break;
+                    }
+                    break;
+
+                }
+
+                case ADDING_SELL_INVOICE: {
+//                    Contractor contractor, Company company, BigDecimal amount, int VAT, boolean isPaid
+                    System.out.println("");
+                    break;
                 }
 
                 case LOGGED_IN_AS_ADMIN: {
@@ -245,14 +338,22 @@ public class Main {
                             System.out.println();
                             System.out.print("Podaj hasło: ");
                             String accountantPassword = scanner.next();
-                            AccountantController.addAccountant(accountantLogin, accountantPassword);
+                            try {
+                                AccountantController.addAccountant(accountantLogin, accountantPassword);
+                            } catch (AccountantAlreadyExistsException e) {
+                                System.out.println("Księgowy już istnieje w bazie danych!");
+                            }
                             break;
 
                         case 3:
                             System.out.println("Podaj login księgowego, którego chcesz usunąć: ");
                             scanner.nextLine();
                             String accountantToBeDeleted = scanner.nextLine();
-                            AccountantController.removeAccountant(accountantToBeDeleted);
+                            try {
+                                AccountantController.removeAccountant(accountantToBeDeleted);
+                            } catch (AccountantNotFoundException e) {
+                                System.out.println("Nie ma takiego księgowego w bazie danych!");
+                            }
                             break;
 
                         case 0:
@@ -386,6 +487,46 @@ public class Main {
                     }
 
                     state = State.MANAGING_COMPANIES;
+                    break;
+                }
+
+                case VIEWING_SELL_INVOICE: {
+
+                    System.out.println("Podaj nazwę firmy: ");
+                    String companyName = scanner.nextLine();
+                    System.out.println("Podaj numer miesiąca (1-12): ");
+                    int month = scanner.nextInt();
+                    scanner.nextLine();
+
+                    try {
+                        Month temp = Month.of(month);
+                        System.out.println("Faktury sprzedaży");
+                        InvoiceController.listSalesInvoice(companyName, temp);
+                    } catch (CompanyNotFoundException e) {
+                        System.out.println("Firma o podanej nazwie nie istnieje!");
+                    } catch (DateTimeException e) {
+                        System.out.println("Taki miesiąc nie istnieje!");
+                    }
+                    break;
+                }
+
+                case VIEWING_PURCHASE_INVOICE: {
+
+                    System.out.println("Podaj nazwę firmy: ");
+                    String companyName = scanner.nextLine();
+                    System.out.println("Podaj numer miesiąca (1-12): ");
+                    int month = scanner.nextInt();
+                    scanner.nextLine();
+
+                    try {
+                        Month temp = Month.of(month);
+                        System.out.println("Faktury kupna");
+                        InvoiceController.listPurchaseInvoice(companyName, temp);
+                    } catch (CompanyNotFoundException e) {
+                        System.out.println("Firma o podanej nazwie nie istnieje!");
+                    } catch (DateTimeException e) {
+                        System.out.println("Taki miesiąc nie istnieje!");
+                    }
                     break;
                 }
             }

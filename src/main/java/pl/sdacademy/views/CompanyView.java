@@ -2,6 +2,7 @@ package pl.sdacademy.views;
 
 import pl.sdacademy.models.Accountant;
 import pl.sdacademy.models.Company;
+import pl.sdacademy.models.CompanyRegistry;
 
 import java.util.List;
 
