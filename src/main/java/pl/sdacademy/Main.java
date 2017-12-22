@@ -28,7 +28,7 @@ public class Main {
         EXIT,
         LOGGING_TO_COMPANY_MANAGEMENT,
         MANAGING_COMPANY_INVOICING,
-        ADDING_SELL_INVOICE,
+        ADDING_SALES_INVOICE,
         ADDING_PURCHASE_INVOICE,
         VIEWING_PURCHASE_INVOICE,
         VIEWING_SELL_INVOICE
@@ -165,13 +165,18 @@ public class Main {
                     System.out.println(" Numer NIP firmy - Zarządzanie firmą");
 
                     System.out.println(" 0 - Wyjście do głównego menu");
-                    String tempImput = scanner.nextLine();
-                    if (tempImput.equals("0")) {
+
+                    String tempInput = scanner.nextLine();
+                    if (tempInput.equals("0")) {
                         state = State.LOGGED_IN_AS_ACCOUNTANT;
                     } else {
-                        //TODO dodać sprawdzenie, czy admin ma prawo dostępu (jest przypisany) do danych wpisanej firmy
-                        if ((currentCompany = CompanyRegistry.getInstance().getCompanyByNipNumber(tempImput)) == null) {
+                        currentCompany = CompanyRegistry.getInstance().getCompanyByNipNumber(tempInput);
+                        if (currentCompany == null) {
                             System.out.println("Nie ma takiej firmy w bazie danych!");
+                            state = State.LOGGED_IN_AS_ACCOUNTANT;
+                        } else if (currentAccountant.getCompaniesAssigned().contains(currentCompany)) {
+                            System.out.println("Nie masz przypisanych praw dostępu do wybranej firmy!");
+                            currentCompany = null;
                             state = State.LOGGED_IN_AS_ACCOUNTANT;
                         } else {
                             state = State.MANAGING_COMPANY_INVOICING;
@@ -182,8 +187,8 @@ public class Main {
 
                 case MANAGING_COMPANY_INVOICING: {
                     System.out.println("Co chcesz zrobić?");
-                    System.out.println(" 1 - dodać fakturę sprzedażową / not implemented");
-                    System.out.println(" 2 - dodać fakturę zakupową / not implemented" );
+                    System.out.println(" 1 - dodać fakturę sprzedażową");
+                    System.out.println(" 2 - dodać fakturę zakupową");
                     System.out.println(" 3 - wyświetlić faktury sprzedażowe z danego miesiąca / not implemented");
                     System.out.println(" 4 - wyświetlić faktury zakupowe z danego miesiąca / not implemented");
 
@@ -191,7 +196,7 @@ public class Main {
 
                     switch (scanner.nextInt()) {
                         case 1:
-                            state = State.ADDING_SELL_INVOICE;
+                            state = State.ADDING_SALES_INVOICE;
                             scanner.nextLine();
                             break;
 
@@ -227,9 +232,13 @@ public class Main {
 
                 }
 
-                case ADDING_SELL_INVOICE: {
-//                    Contractor contractor, Company company, BigDecimal amount, int VAT, boolean isPaid
-                    System.out.println("");
+                case ADDING_SALES_INVOICE: {
+                    state = addingSalesInvoice(scanner, currentCompany, false);
+                    break;
+                }
+
+                case ADDING_PURCHASE_INVOICE: {
+                    state = addingSalesInvoice(scanner, currentCompany, true);
                     break;
                 }
 
@@ -531,5 +540,60 @@ public class Main {
                 }
             }
         }
+    }
+
+    private static State addingSalesInvoice(Scanner scanner, Company currentCompany, boolean isPurchaseInvoice) {
+        State state;
+        System.out.println("Podaj numer Nip kontrahenta:");
+        String contractorNip = scanner.nextLine();
+        Contractor contractor = ContractorRegistry.getInstance().getContractorByNip(contractorNip);
+        if (contractor == null) {
+            System.out.println("Kontrahent nie istnieje w bazie danych.");
+            System.out.println("Podaj nazwę kontrahenta:");
+            String contractorName = scanner.nextLine();
+            ContractorRegistry.getInstance().addContractor(contractorName, contractorNip);
+        }
+        contractor = ContractorRegistry.getInstance().getContractorByNip(contractorNip);
+
+        String purchaseInvoiceNumer = null;
+        if (isPurchaseInvoice) {
+            System.out.println("Wprowadź numer faktury:");
+            purchaseInvoiceNumer = scanner.nextLine();
+        }
+
+        System.out.println("Podaj kwotę na fakturze: ");
+        BigDecimal amount = scanner.nextBigDecimal();
+        int vat;
+        while (true) {
+            System.out.println("Podaj wysokość podatku vat 8% / 23%");
+            vat = scanner.nextInt();
+            if (vat == 8 || vat == 23) {
+                break;
+            }
+            System.out.println("Niepoprawna wartość!");
+        }
+        scanner.nextLine();
+        boolean isPaid;
+        while (true) {
+            System.out.println("Faktura zapłacona? T/N");
+            String temp = scanner.nextLine();
+            if (temp.toLowerCase().equals("t")) {
+                isPaid = true;
+                break;
+            } else if (temp.toLowerCase().equals("n")) {
+                isPaid = false;
+                break;
+            }
+            System.out.println("Niepoprawny wybór!");
+        }
+
+        if (isPurchaseInvoice) {
+            InvoiceRegistry.getInstance().addPurchaseInvoice(contractor, currentCompany, purchaseInvoiceNumer, amount, vat, isPaid);
+        } else {
+            InvoiceRegistry.getInstance().addSalesInvoice(contractor, currentCompany, amount, vat, isPaid);
+        }
+        System.out.println("Faktura została wprowadzona do systemu!");
+        state = State.MANAGING_COMPANY_INVOICING;
+        return state;
     }
 }

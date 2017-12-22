@@ -1,5 +1,6 @@
 package pl.sdacademy.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ public class InvoiceRegistry {
     private ArrayList<Invoice> purchaseInvoicesList;
 
     public InvoiceRegistry() {
-            this.salesInvoicesList = new ArrayList<>();
-            this.purchaseInvoicesList = new ArrayList<>();
+        this.salesInvoicesList = new ArrayList<>();
+        this.purchaseInvoicesList = new ArrayList<>();
     }
 
 
@@ -34,12 +35,12 @@ public class InvoiceRegistry {
     }
 
 
-    public void addSalesInvoice(Invoice invoice) {
-        this.salesInvoicesList.add(invoice);
+    public void addSalesInvoice(Contractor contractor, Company currentCompany, BigDecimal amount, int vat, boolean isPaid) {
+        this.salesInvoicesList.add(new Invoice(contractor, currentCompany, amount, vat, isPaid));
     }
 
-    public void addPurchaseInvoice(Invoice invoice) {
-        this.purchaseInvoicesList.add(invoice);
+    public void addPurchaseInvoice(Contractor contractor, Company company, String invoiceNumber, BigDecimal amount, int VAT, boolean isPaid) {
+        this.purchaseInvoicesList.add(new Invoice(contractor, company, invoiceNumber, amount, VAT, isPaid));
     }
 
 
@@ -47,10 +48,10 @@ public class InvoiceRegistry {
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
 
-        return "FV/"+nipNumber +"/" + String.valueOf(year)+ "/" + String.valueOf(month)+"/" +String.valueOf(counter);
+        return "FV/" + nipNumber + "/" + String.valueOf(year) + "/" + String.valueOf(month) + "/" + String.valueOf(counter);
     }
 
-    public static Month getDate(){ //temporary
+    public static Month getDate() { //temporary
         return LocalDate.now().getMonth();
     }
 

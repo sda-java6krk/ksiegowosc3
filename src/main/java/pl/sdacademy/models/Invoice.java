@@ -4,10 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
-
-/**
- * Created by marcin on 13.12.2017.
- */
 public class Invoice {
 
     public enum InvoiceType {
@@ -27,10 +23,10 @@ public class Invoice {
 
 
 
-    public Invoice(String contractorNip, Company company, BigDecimal amount, int VAT, boolean isPaid) {
+    public Invoice(Contractor contractor, Company company, BigDecimal amount, int VAT, boolean isPaid) {
 
         this.invoiceType = InvoiceType.SALES_INVOICE;
-        this.contractor= ContractorRegistry.getInstance().getContractorByNip(contractorNip);
+        this.contractor= contractor;
         this.company = company;
         this.amount = amount;
         this.VAT = VAT;
@@ -39,12 +35,11 @@ public class Invoice {
 
         //TODO
         this.invoiceNumber = InvoiceRegistry.generateInvoiceNumber(company.getNipNumber(),123);
-
     }
 
-    public Invoice(String contractorNip, Company company, String invoiceNumber, BigDecimal amount, int VAT, boolean isPaid) {
+    public Invoice(Contractor contractor, Company company, String invoiceNumber, BigDecimal amount, int VAT, boolean isPaid) {
         this.invoiceType = InvoiceType.PURCHASE_INVOICE;
-        this.contractor = ContractorRegistry.getInstance().getContractorByNip(contractorNip);
+        this.contractor = contractor;
         this.company = company;
         this.invoiceNumber = invoiceNumber;
         this.amount = amount;
